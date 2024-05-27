@@ -29,7 +29,7 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
         <Navbar.Brand className='p-0' as={NavLink} to="/">
           <div className="d-flex">
             <img 
-            src="/Asset/logo.png" 
+            src="/Asset/black-logo.png" 
             width={50}
             fluid="true"
             className="d-inline-block align-top"
