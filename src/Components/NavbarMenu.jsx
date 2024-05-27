@@ -52,7 +52,7 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
         <Navbar.Collapse id='responsive-navbar-nav'>
           <Nav className="me-auto">
             <Nav.Link as={NavLink} to="/products" onClick={toggleCollapse}>
-              products
+              Products
             </Nav.Link>
 
             <Nav.Link
@@ -73,7 +73,7 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
             </Nav.Link>
 
             <Nav.Link to="/orders" onClick={toggleCollapse}>
-              orders
+              Orders
             </Nav.Link>
 
             {/* <Nav.Link to="/login" onClick={toggleCollapse}>
