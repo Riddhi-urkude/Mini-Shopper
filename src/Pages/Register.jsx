@@ -82,7 +82,7 @@ export const Register = () => {
               />
               <div className="d-flex flex-column justify-content-center">
                 <h4 className="m-0" style={{ fontSize: "1rem" }}>
-                  QuickPik
+                  MINI-SHOPPER
                 </h4>
                 <small style={{ fontSize: "0.8rem" }}>
                   Rapid Reflection, Swift Selection
