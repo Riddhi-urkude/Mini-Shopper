@@ -13,7 +13,7 @@ import { useContext } from "react";
 //import { GoogleLogin } from "@react-oauth/google";
 
 export const Login = () => {
-  document.title = "SHOPPER | Login";
+  document.title = "MINI-SHOPPER | Login";
 
   // Loading state for spinner
   const [loading, setLoading] = useState(false);
