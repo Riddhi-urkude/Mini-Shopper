@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export const Register = () => {
-  document.title = "SHOPPER | Register";
+  document.title = "MINI-SHOPPER | Register";
 
   const navigate = useNavigate();
 
