@@ -89,7 +89,7 @@ export const Login = () => {
             />
             <div className="d-flex flex-column justify-content-center">
               <h4 className="m-0" style={{ fontSize: "1rem" }}>
-                SHOPPER
+                MINI-SHOPPER
               </h4>
               <small style={{ fontSize: "0.8rem" }}>
                 Rapid Reflection, Swift Selection
