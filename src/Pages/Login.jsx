@@ -39,30 +39,17 @@ export const Login = () => {
             //  reset form
             actions.resetForm();
 
-            const tokens = {
-              accessToken: res.accessToken,
-              refreshToken: res.refreshToken,
-            };
-
-            const { ...responseUser } = res.user;
-            //  set user data and login status in user context
-            userContext.doLogin(responseUser, tokens);
-
-            // based on user role, redirect to dashboard or home page
-            // NORMAL USER -> home page
-            // ADMIN -> profile page
-            res.user.roles.forEach((role) => {
-              if (role.roleName === ROLES.NORMAL) {
-                navigate("/");
-              }
-              if (role.roleName === ROLES.ADMIN) {
-                navigate("/");
-              }
-            });
+            if(res.data.message=="Login Success"){
+              toast.success("Login successfully!");
+              navigate("/");
+            }
+            
           })
           .catch((err) => {
             // unauthorised login error
             if (err.response.status === 401) {
+              toast.error(err.response.data.message);
+            }else if(err.response.status === 404){
               toast.error(err.response.data.message);
             } else {
               toast.error("Something went wrong! Please try again later");
