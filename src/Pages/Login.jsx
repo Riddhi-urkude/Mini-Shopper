@@ -27,7 +27,7 @@ export const Login = () => {
   const { handleSubmit, handleChange, handleBlur, values, touched, errors } =
     useFormik({
       initialValues: {
-        email: "",
+        userId: "",
         password: "",
       },
       validationSchema: loginSchema,
@@ -106,19 +106,19 @@ export const Login = () => {
       {/* Login Form */}
       <Form noValidate className="mt-2" onSubmit={handleSubmit}>
         <Row className="mb-3">
-          <Form.Group as={Col} controlId="email">
-            <Form.Label>Email</Form.Label>
+          <Form.Group as={Col} controlId="userId">
+            <Form.Label>UserId</Form.Label>
             <Form.Control
-              type="email"
-              placeholder="Email"
+              type="email/userId"
+              placeholder="Email/userId"
               autoComplete="on"
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.email}
-              isInvalid={touched.email && !!errors.email}
+              value={values.userId}
+              isInvalid={touched.userId && !!errors.userId}
             />
             <Form.Control.Feedback type="invalid">
-              {errors.email}
+              {errors.userId}
             </Form.Control.Feedback>
           </Form.Group>
         </Row>
