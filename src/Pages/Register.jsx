@@ -29,8 +29,8 @@ export const Register = () => {
   const { handleSubmit, handleChange, handleBlur, values, touched, errors } =
     useFormik({
       initialValues: {
-        fname: "",
-        lname: "",
+        firstname: "",
+        lastname: "",
         email: "",
         password: "",
         cpassword: "",
@@ -120,32 +120,32 @@ export const Register = () => {
         </Row>
         <Form noValidate className="mt-2" onSubmit={handleSubmit}>
           <Row className="mb-3 justify-content-center" md={10}>
-            <Form.Group as={Col} controlId="fname">
+            <Form.Group as={Col} controlId="firstname">
               <Form.Label>First Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="First Name"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.fname}
-                isInvalid={touched.fname && !!errors.fname}
+                value={values.firstname}
+                isInvalid={touched.firstname && !!errors.firstname}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.fname}
+                {errors.firstname}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} controlId="lname">
+            <Form.Group as={Col} controlId="lastname">
               <Form.Label>Last Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Last Name"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.lname}
-                isInvalid={touched.lname && !!errors.lname}
+                value={values.lastname}
+                isInvalid={touched.lastname && !!errors.lastname}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.lname}
+                {errors.lastname}
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
