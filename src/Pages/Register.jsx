@@ -74,7 +74,7 @@ export const Register = () => {
           <Col className="text-center mt-3">
             <div>
               <img
-                src="/Asset/logo.png"
+                src="/Asset/black-logo.png"
                 width={50}
                 fluid="true"
                 className="d-inline-block align-top"
