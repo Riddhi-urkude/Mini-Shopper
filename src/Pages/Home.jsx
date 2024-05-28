@@ -2,7 +2,7 @@ import React from "react";
 import Hero from "../Components/Hero";
 
 export default function Home() {
-  document.title = "SHOPPER | Your Trusted Destination for the Latest Electronics";
+  document.title = "SHOPPER | Your Trusted Destination";
 
   return (
     <Hero
