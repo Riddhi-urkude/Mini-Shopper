@@ -7,7 +7,7 @@ import { About } from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Profile from "./Pages/Users/Profile";
 import { AuthProvider } from "./context/AuthContext";
-//import PrivateRoutes from "./Components/auth/PrivateRoutes";
+import PrivateRoutes from "./Components/auth/PrivateRoutes";
 //import UserProvider from "./context/UserProvider";
 //import { CartProvider } from "./context/CartProvider";
 
@@ -30,7 +30,15 @@ const App = () => {
               <Route path="/register" element={<Register />}></Route>
               <Route path="/about" element={<About />}></Route>
               <Route path="/contact" element={<Contact />}></Route>
-              <Route path="/profile" element={<Profile />}></Route>
+
+              {/* Routes only admin and logged in user can access*/}
+               <Route
+                element={
+                  <PrivateRoutes allowedRole={[ROLES.NORMAL, ROLES.ADMIN]} />
+                }
+              >
+                <Route path="/profile" element={<Profile />}></Route>
+               </Route> 
               </Routes> 
         </AuthProvider>
     </div>
