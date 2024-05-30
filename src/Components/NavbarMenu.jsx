@@ -5,9 +5,13 @@ import NavbarToggle from 'react-bootstrap/esm/NavbarToggle';
 import Nav from "react-bootstrap/Nav";
 import { NavLink } from "react-router-dom";
 import { useState } from 'react';
+import { UserContext } from '../context/UserContext';
+import { useContext } from 'react';
+
 
 
 const NavbarMenu = ({ handleShowCategorySidebar }) => {
+  const userContext = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
 
   function toggleCollapse() {
@@ -74,6 +78,10 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
 
             <Nav.Link to="/orders" onClick={toggleCollapse}>
               Orders
+            </Nav.Link>
+
+            <Nav.Link as={NavLink} to="/profile" onClick={toggleCollapse}>
+                Hello, {userContext.userData.fname}
             </Nav.Link>
 
             {/* <Nav.Link to="/login" onClick={toggleCollapse}>
