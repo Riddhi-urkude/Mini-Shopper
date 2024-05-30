@@ -5,6 +5,11 @@ import { Register } from "./Pages/Register";
 import Home from "./Pages/Home";
 import { About } from "./Pages/About";
 import Contact from "./Pages/Contact";
+import Profile from "./Pages/Users/Profile";
+import { AuthProvider } from "./context/AuthContext";
+//import PrivateRoutes from "./Components/auth/PrivateRoutes";
+//import UserProvider from "./context/UserProvider";
+//import { CartProvider } from "./context/CartProvider";
 
 
 
@@ -15,6 +20,7 @@ const App = () => {
 
   return (
     <div>
+      <AuthProvider>
       <NavbarMenu/>
 
       <Routes>
@@ -24,8 +30,11 @@ const App = () => {
               <Route path="/register" element={<Register />}></Route>
               <Route path="/about" element={<About />}></Route>
               <Route path="/contact" element={<Contact />}></Route>
-              </Routes>
+              <Route path="/profile" element={<Profile />}></Route>
+              </Routes> 
+        </AuthProvider>
     </div>
+    
   );
 };
 
