@@ -5,22 +5,20 @@ import { Register } from "./Pages/Register";
 import Home from "./Pages/Home";
 import { About } from "./Pages/About";
 import Contact from "./Pages/Contact";
-import Profile from "./Pages/Users/Profile";
-import { AuthProvider } from "./context/AuthContext";
-import PrivateRoutes from "./Components/auth/PrivateRoutes";
-//import UserProvider from "./context/UserProvider";
-//import { CartProvider } from "./context/CartProvider";
+import { SingleProductPage } from "./Pages/Users/SingleProductPage";
+import { CategoryProductsPage } from "./Pages/Users/CategoryProduct";
+import { Products } from "./Pages/Users/Products";
+
 
 
 
 
 const App = () => {
-  // state for category sidebar
+  
 
 
   return (
     <div>
-      <AuthProvider>
       <NavbarMenu/>
 
       <Routes>
@@ -30,19 +28,17 @@ const App = () => {
               <Route path="/register" element={<Register />}></Route>
               <Route path="/about" element={<About />}></Route>
               <Route path="/contact" element={<Contact />}></Route>
-
-              {/* Routes only admin and logged in user can access*/}
-               <Route
-                element={
-                  <PrivateRoutes allowedRole={[ROLES.NORMAL, ROLES.ADMIN]} />
-                }
-              >
-                <Route path="/profile" element={<Profile />}></Route>
-               </Route> 
-              </Routes> 
-        </AuthProvider>
+              <Route path="/products" element={<Products />}></Route>
+              <Route
+                path="/product/:productId"
+                element={<SingleProductPage />}
+              ></Route>
+              <Route
+                path="/category/:categoryId/products"
+                element={<CategoryProductsPage />}
+              ></Route>
+              </Routes>
     </div>
-    
   );
 };
 
