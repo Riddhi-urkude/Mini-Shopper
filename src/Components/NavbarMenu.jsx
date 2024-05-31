@@ -5,13 +5,9 @@ import NavbarToggle from 'react-bootstrap/esm/NavbarToggle';
 import Nav from "react-bootstrap/Nav";
 import { NavLink } from "react-router-dom";
 import { useState } from 'react';
-import { UserContext } from '../context/UserContext';
-import { useContext } from 'react';
-
 
 
 const NavbarMenu = ({ handleShowCategorySidebar }) => {
-  const userContext = useContext(UserContext);
   const [expanded, setExpanded] = useState(false);
 
   function toggleCollapse() {
@@ -41,7 +37,7 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
             />
             <div className="d-flex flex-column justify-content-center">
               <h4 className="m-0" style={{fontSize:"1rem"}}>
-                SHOPPER
+                MINI-SHOPPER
               </h4>
               <small style={{fontSize:"0.8rem"}}>
                 Rapid Reflection, swift selection
@@ -68,20 +64,16 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
               Categories 
             </Nav.Link>
             
-            <Nav.Link to="/about" onClick={toggleCollapse}>
+            <Nav.Link as={NavLink} to="/about" onClick={toggleCollapse}>
               About Us
             </Nav.Link>
 
-            <Nav.Link to="/contact" onClick={toggleCollapse}>
+            <Nav.Link as={NavLink} to="/contact" onClick={toggleCollapse}>
               Contact Us
             </Nav.Link>
 
             <Nav.Link to="/orders" onClick={toggleCollapse}>
               Orders
-            </Nav.Link>
-
-            <Nav.Link as={NavLink} to="/profile" onClick={toggleCollapse}>
-                Hello, {userContext.userData.fname}
             </Nav.Link>
 
             {/* <Nav.Link to="/login" onClick={toggleCollapse}>
@@ -100,3 +92,4 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
 };
 
 export default NavbarMenu
+
