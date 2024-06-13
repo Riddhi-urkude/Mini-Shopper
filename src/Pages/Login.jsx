@@ -21,7 +21,7 @@ export const Login = () => {
   const navigate = useNavigate();
 
   // user context
-  const userContext = useContext(UserContext);
+ const userContext = useContext(UserContext);
 
   // Formik hook
   const { handleSubmit, handleChange, handleBlur, values, touched, errors } =
@@ -37,14 +37,41 @@ export const Login = () => {
         loginUser(values)
           .then((res) => {
             //  reset form
-            actions.resetForm();
+            // console.log("response in login page "+res.data.message);
+            // console.log("response in login page "+res.data.statusMessage);
+            // console.log("response in login page "+res.data.status);
+            //console.log(res);
 
             if(res.data.message=="Login Success"){
               toast.success("Login successfully!");
+             
+    
               navigate("/");
             }
-            
-          })
+             actions.resetForm();
+             const { ...responseUser } = res.data.user;
+            // console.log(responseUser);
+              // const tokens = {
+              //  accessToken: "",
+              //  refreshToken: "",
+              // };
+             //  set user data and login status in user context
+             userContext.doLogin(responseUser);
+         
+
+          
+          //   // based on user role, redirect to dashboard or home page
+          //   // NORMAL USER -> home page
+          //   // ADMIN -> profile page
+          //   res.user.roles.forEach((role) => {
+          //     if (role.roleName === ROLES.NORMAL) {
+          //       navigate("/");
+          //     }
+          //     if (role.roleName === ROLES.ADMIN) {
+          //       navigate("/");
+          //     }
+          //   });
+           })
           .catch((err) => {
             // unauthorised login error
             if (err.response.status === 401) {
@@ -62,6 +89,8 @@ export const Login = () => {
       },
     });
 
+ 
+
   return (
     <Container fluid="sm" style={{ maxWidth: "900px" }}>
       <Row>
@@ -76,7 +105,7 @@ export const Login = () => {
             />
             <div className="d-flex flex-column justify-content-center">
               <h4 className="m-0" style={{ fontSize: "1rem" }}>
-                MINI-SHOPPER
+               MINI-SHOPPER
               </h4>
               <small style={{ fontSize: "0.8rem" }}>
                 Rapid Reflection, Swift Selection
@@ -96,8 +125,8 @@ export const Login = () => {
           <Form.Group as={Col} controlId="userId">
             <Form.Label>UserId</Form.Label>
             <Form.Control
-              type="email/userId"
-              placeholder="Email/userId"
+              type="Email/UserId"
+              placeholder="Email/UserId"
               autoComplete="on"
               onChange={handleChange}
               onBlur={handleBlur}
