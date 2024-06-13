@@ -2,15 +2,11 @@ import axios from "axios";
 import  { useEffect } from "react";
 
 export const registerUser= async (data)=> {
-   // event.preventDefault();
-    //  console.log(firstName+" "+lastName+" "+email+" "+password+" "+city+" "+state+" "+pincode);
-    //console.log(event);
-    //const user = { firstName, lastName, email, password, address, street, city, state, pincode, userId };
-    //console.log("user "+data);
-     data.userId=data.email;
-    //  data.firstName=data.fname;
+      data.userId=data.email;
+      //data.firstName=null;
     //  data.lastName=data.lname;
     // data.password="Kishore@123";
+      console.log(data);
    //  try{
         return await axios.post("http://localhost:8080/users/newUser", data);
         //.then((res)=>{console.log("response in user service "+res)});
@@ -34,7 +30,7 @@ export const loginUser= async(data)=>{
     // const userId="arun@gmail.com";
     // const password="Awed123";
     // const login={};//"dineshkumar@gmail.com";
-  //  data.userId=data.email;
+    //data.userId=null;
   //  try {
      return await axios.post(`http://localhost:8080/users/loginUser`, data);
      // console.log("result "+result.data);
@@ -53,3 +49,24 @@ export const loginUser= async(data)=>{
     //   return err;
     // }
   }
+
+
+export const getUserById= async (userId) => {
+
+  const res=await axios.post(`http://localhost:8080/users/${userId}`);
+  return res.data;
+
+}
+
+
+export const updateUser= async (userId, data) => {
+  //  console.log(data);
+  const res=await axios.put(`http://localhost:8080/users/${userId}`,data);
+  return res.data;
+
+}
+
+
+
+
+
