@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Alert,
   Button,
@@ -11,7 +12,8 @@ import {
 import { NavLink } from "react-router-dom";
 import { useFormik } from "formik";
 import { registerSchema } from "../utils/schema/RegisterSchema.js";
-import { registerUser } from "../services/user.service";
+import { registerUser, testHere } from "../services/user.service";
+
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -26,28 +28,42 @@ export const Register = () => {
   // Loading state for register button
   const [loading, setLoading] = useState(false);
 
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors } =
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue } =
+    
     useFormik({
       initialValues: {
-        firstname: "",
-        lastname: "",
+        firstName: "",
+        lastName: "",
         email: "",
         password: "",
         cpassword: "",
+        userId: "",
       },
+      
       validationSchema: registerSchema,
       onSubmit: (values, actions) => {
         //set loading to true for spinner
-        setLoading(true);
+        console.log("printing in register");
+       // setLoading(true);
         registerUser(values)
-          .then(() => {
-            toast.success("Registered successfully!");
+          .then((res) => {
+            // console.log(res);
+            // console.log("response in register page "+res.data.message);
+            // console.log("response in register page "+res.data.statusMessage);
+            // console.log("response in register page "+res.data.status);
+            if(res.data.status==="201"){
+             // navigate to login page
+             toast.success("Registered successfully!");
+             navigate("/login");
             // reset server error
             setServerError(null);
             // reset form
             actions.resetForm();
-            // navigate to login page
-            navigate("/login");
+
+            }else if(res.data.status==="208"){
+              toast.success(res.data.message);
+
+            }
           })
           .catch((err) => {
             if (
@@ -66,6 +82,37 @@ export const Register = () => {
           });
       },
     });
+    const customHandleChange=(e)=>{
+      handleChange(e);
+      if(e.target.id==='email'){
+        setFieldValue('userId', e.target.value);
+      }
+       
+      };
+      // const registerNewUser=(event)=> {
+      //    event.preventDefault();
+      //    //  console.log(firstName+" "+lastName+" "+email+" "+password+" "+city+" "+state+" "+pincode);
+      //    //console.log(event);
+      //    const data = { firstName: "fi", lastName: "la", email: "emmp@gmail.com", password:"pass", userId: "emmp@gmail.com" };
+      //    //console.log("user "+data);
+      //   // data.userId=data.email;
+      //    // data.firstName=data.fname;
+      //    // data.lastName=data.lname;
+      //    // data.password="Kishore@123";
+      //    try {
+      //       axios.post("http://localhost:8080/users/newUser", data).then((res) => {
+      //        console.log("response in register jsx " + res.data);
+
+      //        navigate("/login");
+      //        //return res;
+      //      });
+      //    } catch (err) {
+      //      alert(err);
+      //    }
+     
+      //  }
+    
+  
 
   return (
     <>
@@ -82,7 +129,7 @@ export const Register = () => {
               />
               <div className="d-flex flex-column justify-content-center">
                 <h4 className="m-0" style={{ fontSize: "1rem" }}>
-                  MINI-SHOPPER
+                MINI-SHOPPER
                 </h4>
                 <small style={{ fontSize: "0.8rem" }}>
                   Rapid Reflection, Swift Selection
@@ -120,32 +167,32 @@ export const Register = () => {
         </Row>
         <Form noValidate className="mt-2" onSubmit={handleSubmit}>
           <Row className="mb-3 justify-content-center" md={10}>
-            <Form.Group as={Col} controlId="firstname">
+            <Form.Group as={Col} controlId="firstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="First Name"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.firstname}
-                isInvalid={touched.firstname && !!errors.firstname}
+                value={values.firstName}
+                isInvalid={touched.firstName && !!errors.firstName}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.firstname}
+                {errors.firstName}
               </Form.Control.Feedback>
             </Form.Group>
-            <Form.Group as={Col} controlId="lastname">
+            <Form.Group as={Col} controlId="lastName">
               <Form.Label>Last Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Last Name"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.lastname}
-                isInvalid={touched.lastname && !!errors.lastname}
+                value={values.lastName}
+                isInvalid={touched.lastName && !!errors.lastName}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.lastname}
+                {errors.lastName}
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
@@ -202,7 +249,7 @@ export const Register = () => {
           </Row>
           {/* Register Button */}
           {/* Disable button while loading and show spinner as well */}
-          <Button variant="primary" type="submit" disabled={loading}>
+          <Button variant="primary" type="submit" disabled={loading} >
             <Spinner
               animation="border"
               as="span"
@@ -224,3 +271,10 @@ export const Register = () => {
     </>
   );
 };
+
+
+
+
+
+
+
