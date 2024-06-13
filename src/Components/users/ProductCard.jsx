@@ -35,7 +35,7 @@ export const ProductCard = ({ product }) => {
       <Card>
         <img
           src={`${process.env.REACT_APP_IMAGE_KIT_URL}/tr:h-300,w-400/products/${product.productImage}`}
-          alt={product.title}
+          alt={product.productName}
           width="100%"
           height="180px"
           onClick={() => navigate(`/product/${product.productId}`)}
@@ -47,16 +47,16 @@ export const ProductCard = ({ product }) => {
         <Card.Body>
           <div className="d-flex justify-content-between">
             <small className="text-muted fw-semibold">{product.brand}</small>
-            {!product.stock || product.quantity<=0 ? <Badge bg="danger">Out of Stock</Badge> : ""}
+            {product.stock == 0 ? <Badge bg="danger">Out of Stock</Badge> : ""}
           </div>
           <h6
             className="mb-0 product-title"
             style={{ minHeight: "46px" }}
             onClick={() => navigate(`/product/${product.productId}`)}
           >
-            {product.title.length > 60
-              ? product.title.slice(0, 60) + "..."
-              : product.title}
+            {product.productName.length > 60
+              ? product.productName.slice(0, 60) + "..."
+              : product.productName}
           </h6>
 
           <small style={{ minHeight: "68px", display: "inline-block" }}>
@@ -68,22 +68,22 @@ export const ProductCard = ({ product }) => {
             {product.discountedPrice ? (
               <div className="text-muted">
                 <del>
-                  <small>$ {product.unitPrice}</small>
+                  <small>₹ {product.unitPrice}</small>
                 </del>
                 <small className="text-danger ms-2">
-                  $ {product.discountedPrice}
+                ₹ {product.discountedPrice}
                 </small>
               </div>
             ) : (
               <div className="me-3">
-                <small>$ {product.unitPrice}</small>
+                <small>₹ {product.unitPrice}</small>
               </div>
             )}
           </div>
           <Button
             variant="primary"
             size="sm"
-            disabled={!product.stock || product.quantity <= 0}
+            disabled={!product.stock}
             onClick={() => {
               handleAddToCart(product.productId);
             }}
