@@ -18,9 +18,6 @@ import {SingleProductPage} from "./Pages/users/SingleProductPage";
 import Profile from "./Pages/users/Profile";
 import { ShoppingCart } from "./Pages/users/ShoppingCart";
 import { CartProvider } from "./context/CartProvider";
-import {OrderCheckout} from "./Pages/users/OrderCheckout";
-import { Orders } from "./Pages/users/Orders";
-import { OrderDetail } from "./Pages/users/OrderDetail";
 
 import PrivateRoutes from "./Components/auth/PrivateRoutes";
 
@@ -72,9 +69,7 @@ const App = () => {
               >
                  <Route path="/profile" element={<Profile/>}></Route>
                <Route path="/cart" element={<ShoppingCart />}></Route>
-               <Route path="/place-order" element={<OrderCheckout />}></Route>
-               <Route path="/orders" element={<Orders />}></Route>
-               <Route path="/order/:orderId" element={<OrderDetail />}></Route>
+               
                </Route> 
               {/* Routes only admin and logged in user can access*/}
                {/* <Route
