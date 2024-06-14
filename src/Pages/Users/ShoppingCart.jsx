@@ -2,13 +2,16 @@ import React from "react";
 import { useContext } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { CartContext } from "../../context/CartContext";
-import { SingleCartItem } from "../../components/users/SingleCartItem";
+import { SingleCartItem } from "../../Components/users/SingleCartItem";
 import { NavLink } from "react-router-dom";
 
-export const ShoppingCart = () => {
-  const { cart } = useContext(CartContext);
+//import { getProductsByCategoryId } from "../../services/product.service";
 
-  // get total amount of cart
+export const ShoppingCart = () => {
+   
+  const { cart } = useContext(CartContext);
+ // console.log(cart);
+
   const getTotalAmount = () => {
     let totalAmount = 0;
     cart &&
@@ -43,7 +46,7 @@ export const ShoppingCart = () => {
           <Container>
             <Row>
               <Col className="text-end">
-                <h5>Total Amount: $ {getTotalAmount()}</h5>
+                <h5>Total Amount: ₹ {getTotalAmount()}</h5>
                 <Button className="mb-3" as={NavLink} to="/place-order">Proceed to Checkout</Button>
               </Col>
             </Row>
