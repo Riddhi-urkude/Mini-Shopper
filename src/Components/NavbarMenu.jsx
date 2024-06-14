@@ -1,14 +1,30 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Navbar from 'react-bootstrap/Navbar';
 import Container from 'react-bootstrap/Container';
 import NavbarToggle from 'react-bootstrap/esm/NavbarToggle';
 import Nav from "react-bootstrap/Nav";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from 'react';
+import { Badge } from "react-bootstrap";
 
+import { UserContext } from "../context/UserContext";
+
+import { CartContext } from "../context/CartContext";
 
 const NavbarMenu = ({ handleShowCategorySidebar }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const navigate = useNavigate();
+  const userContext =  useContext(UserContext);
+  const { cart } = useContext(CartContext);
+
+
+  const doLogout = () => {
+    // remove user data and token from local storage and user context
+    userContext.doLogout();
+    navigate("/login"); // redirect to login page
+  };
+
 
   function toggleCollapse() {
     if (window.innerWidth < 992) {
@@ -76,14 +92,51 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
               Orders
             </Nav.Link>
 
-            {/* <Nav.Link to="/login" onClick={toggleCollapse}>
-              Login
-            </Nav.Link>
-
-            <Nav.Link to="/register" onClick={toggleCollapse}>
-              Register
-            </Nav.Link> */}
           </Nav>
+          <Nav>
+              {userContext.isLogin ? (
+                <>
+                  <Nav.Link as={NavLink} to="/cart" onClick={toggleCollapse}>
+                    <i className="fa-solid fa-cart-shopping">Cart</i>
+                    {cart && cart?.items.length === 0 ? (
+                      ""
+                    ) : (
+                      <Badge className="cart-badge" bg="danger">
+                        {cart && cart?.items?.length}
+                      </Badge>
+                    )}
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/orders" onClick={toggleCollapse}>
+                    Orders
+                  </Nav.Link>
+
+                 <Nav.Link
+                    onClick={() => {
+                      toggleCollapse();
+                      doLogout();
+                    }}
+                  >
+                    Logout
+                  </Nav.Link>
+                  <Nav.Link as={NavLink} to="/profile" onClick={toggleCollapse}>
+                    Hello, {userContext.userData.firstName}
+                  </Nav.Link>
+                </>
+              ) : (
+                <>
+                  <Nav.Link as={NavLink} to="/login" onClick={toggleCollapse}>
+                    Login
+                  </Nav.Link>
+                  <Nav.Link
+                    as={NavLink}
+                    to="/register"
+                    onClick={toggleCollapse}
+                  >
+                    Register
+                  </Nav.Link>
+                </>
+              )}
+            </Nav>
         </Navbar.Collapse>
       </Container>
       </Navbar>
