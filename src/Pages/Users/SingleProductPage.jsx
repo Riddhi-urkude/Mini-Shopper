@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getProductById } from "../../services/product.service";
 import { useState } from "react";
 import { toast } from "react-toastify";
@@ -15,6 +15,8 @@ import { ShowHtml } from "../../Components/ShowHtml";
 export const SingleProductPage = () => {
   const [product, setProduct] = useState(null);
   document.title = `Product | ${product?.title}`;
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
@@ -70,7 +72,8 @@ export const SingleProductPage = () => {
 
       // function call to add item to cart
       addItem(data);
-      window.location.href = "/place-order";
+      navigate(`/place-order`);
+//      window.location.href = "/place-order";
     }
   };
 
@@ -78,6 +81,7 @@ export const SingleProductPage = () => {
   const fetchProductById = async (productId) => {
     try {
       const data = await getProductById(productId);
+     // console.log(data);
       setProduct(data);
       setLoading(false);
     } catch (error) {
@@ -98,7 +102,7 @@ export const SingleProductPage = () => {
       <Container className="mt-3">
         <Row>
           <Col md={5} lg={3}>
-            <IKContext
+            {/* <IKContext
               urlEndpoint={process.env.REACT_APP_IMAGE_KIT_URL}
               publicKey={process.env.REACT_APP_IMAGE_KIT_PUBLIC_KEY}
             >
@@ -115,21 +119,21 @@ export const SingleProductPage = () => {
                 height="100%"
                 style={{ objectFit: "cover", borderRadius: "6px" }}
               />
-            </IKContext>
+            </IKContext> */}
           </Col>
           <Col md={7} lg={9}>
             <h5 className="text-muted fw-semibold mb-0">{product.brand}</h5>
-            {!product.stock || product.quantity <= 0 ? (
+            {product.stock =="0"  ? (
               <Badge bg="danger">Out of Stock</Badge>
             ) : (
               ""
             )}
-            <h3 className="fw-semibold mb-0">{product.title}</h3>
+            <h3 className="fw-semibold mb-0">{product.title}</h3> 
             <p>{product.shortDescription}</p>
 
             {/* Quantity */}
             {/* Show quantity options when quantity>0 or stock==true */}
-            {product.quantity > 0 && product.stock && (
+            { product.stock && (
               <div className="mb-5 d-flex gap-2 align-items-center">
                 <p className="m-0">Quantity</p>
                 <Form.Select
@@ -139,13 +143,13 @@ export const SingleProductPage = () => {
                   onChange={handleQuantityChange}
                 >
                   {/* If quantity is > 10 then show options till 10 otherwise show options for number of quantities we have */}
-                  {product.quantity >= 10
+                  {product.stock >= 10
                     ? Array.from({ length: 10 }, (_, index) => (
                         <option value={index + 1} key={index}>
                           {index + 1}
                         </option>
                       ))
-                    : Array.from({ length: product.quantity }, (_, index) => (
+                    : Array.from({ length: product.stock }, (_, index) => (
                         <option value={index + 1} key={index}>
                           {index + 1}
                         </option>
@@ -155,29 +159,29 @@ export const SingleProductPage = () => {
             )}
 
             <small className="text-danger fw-semibold">
-              {product.quantity < 10 && product.quantity > 0
-                ? `Only ${product.quantity} left in stock`
+              {product.stock < 10 && product.stock > 0
+                ? `Only ${product.stock} left in stock`
                 : ""}
             </small>
             {product.discountedPrice ? (
               <div className="text-muted">
                 <h4 className="d-inline mb-0 text-decoration-line-through">
-                  $ {product.unitPrice}
+                 ₹ {product.unitPrice}
                 </h4>
                 <h4 className="text-danger ms-2 d-inline mb-0">
-                  $ {product.discountedPrice}
+                 ₹ {product.discountedPrice}
                 </h4>
               </div>
             ) : (
               <div className="me-3">
-                <h4>$ {product.unitPrice}</h4>
+                <h4>₹ {product.unitPrice}</h4>
               </div>
             )}
             <div className="mt-3">
               <Button
                 variant="primary"
                 className="me-2"
-                disabled={!product.stock || product.quantity <= 0}
+                disabled={!product.stock }
                 onClick={() => {
                   handleBuyNow(product.productId, quantity);
                 }}
@@ -186,7 +190,7 @@ export const SingleProductPage = () => {
               </Button>
               <Button
                 variant="outline-primary"
-                disabled={!product.stock || product.quantity <= 0}
+                disabled={!product.stock}
                 onClick={() => {
                   handleAddToCart(product.productId, quantity);
                 }}
@@ -196,11 +200,11 @@ export const SingleProductPage = () => {
             </div>
           </Col>
         </Row>
-        <Row className="mt-3">
+        {/* <Row className="mt-3">
           <Col>
             <ShowHtml htmlText={product.description}></ShowHtml>
           </Col>
-        </Row>
+        </Row> */}
       </Container>
     )
   );
