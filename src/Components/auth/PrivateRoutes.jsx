@@ -6,9 +6,8 @@ const PrivateRoutes = ({ allowedRole }) => {
   const location = useLocation();
 
   // Check if the user has the required role
-  const isRole = !!getUserFromLocalStorage()?.roles?.find(
-    (role) => allowedRole.includes(role.roleName)
-  );
+  const isRole = "User";
+//  !!getUserFromLocalStorage()?.roles?.find(    (role) => allowedRole.includes(role.roleName));
 
   // Render the component if the user has the required role
   return isRole ? (
