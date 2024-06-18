@@ -42,3 +42,30 @@ export const updateOrder = async (order, orderId) => {
 //   );
 //   return result.data;
 };
+
+// add item to order
+export const addItemToOrder = async (data, userId) => {
+
+  const res = await axios.post(`http://localhost:8080/orders/${userId}`, data);
+//  console.log(res);
+  return res.data;
+};
+
+// remove item from cart
+export const removeItemFromOrder = async (userId, itemId) => {
+  try{
+    const res = await axios.delete(`http://localhost:8080/order/${userId}/item/${itemId}`);
+  //return res.data;
+  //console.log(res);
+  return res.data;
+  }catch(err){
+    
+  }
+};
+
+// remove all items from cart
+export const removeAllItemsFromOrder = async (userId) => {
+  // const res = await privateAxios.delete(`${API_ENDPOINTS.CARTS}/${userId}`);
+  //return res.data;
+  return cart;
+};
