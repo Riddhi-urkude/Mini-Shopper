@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getOrderById } from "../../services/order.service";
+import { OrderContext } from "../../context/OrderContext";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
@@ -9,7 +10,9 @@ import { Card, Col, Container, Row } from "react-bootstrap";
 import { Loader } from "../../Components/Loader";
 
 export const OrderDetail = () => {
-  document.title = "QuickPik | View Order Details";
+  document.title = "MINI-SHOPPER | View Order Details";
+
+  const { orders } = useContext(OrderContext);
 
   const { orderId } = useParams();
   console.log("order id "+orderId);
