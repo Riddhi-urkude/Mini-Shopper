@@ -88,8 +88,8 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
               Contact Us
             </Nav.Link>
 
-            <Nav.Link to="/orders" onClick={toggleCollapse}>
-              Orders
+            <Nav.Link to="/UploadExcelSheet" onClick={toggleCollapse}>
+              Upload-ExcelSheet
             </Nav.Link>
 
           </Nav>
@@ -145,4 +145,5 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
 };
 
 export default NavbarMenu
+
 
