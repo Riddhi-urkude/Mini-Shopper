@@ -1,72 +1,82 @@
 import axios from "axios";
-import  { useEffect } from "react";
 
-export const registerUser= async (data)=> {
-      data.userId=data.email;
-      //data.firstName=null;
-    //  data.lastName=data.lname;
-    // data.password="Kishore@123";
-      console.log(data);
-   //  try{
-        return await axios.post("http://localhost:8080/users/newUser", data);
-        //.then((res)=>{console.log("response in user service "+res)});
-    //  }catch(err){
-    //   console.log("error "+err);
-    //   return err;
-
-    //  }
- 
-  }
+// get order by id
+export const getOrderById = async (orderId) => {
+  const result = await axios.get(`http://localhost:8080/orders/${orderId}`);
+  return result.data;
+};
 
 
-export const loginUser= async(data)=>{
-    // console.log("data "+data.email);
-    // console.log("data "+data.password);
-    // data.userId=data.email;
-    // console.log("data "+data.email);
-    // console.log("data "+data.password);
-    // console.log("user data "+data.userId);
+// get all orders by user id
+export const getAllOrdersByUserId = async (userId) => {
+  const result = await axios.get(`http://localhost:8080/orders/user/${userId}`);
+   return result.data;
+};
 
-    // const userId="arun@gmail.com";
-    // const password="Awed123";
-    // const login={};//"dineshkumar@gmail.com";
-    //data.userId=null;
-  //  try {
-     return await axios.post(`http://localhost:8080/users/loginUser`, data);
-     // console.log("result "+result.data);
-    // } catch (err) {
-    //   console.log("in service ");
-    //   if (err.response) {
-    //     console.log(err.response);
-
-    //     console.log("server responded");
-    //     return err;
-    //   } else if (err.request) {
-    //     console.log("network error");
-    //   } else {
-    //     console.log(err);
-    //   }
-    //   return err;
-    // }
-  }
+// create order
+export const createOrder = async (order) => {
+    console.log("coming inside create order" );
+    console.log(order);
+   const result = await axios.post(`http://localhost:8080/orders`, order);
+   return result.data;
+};
 
 
-export const getUserById= async (userId) => {
+export const createOrderwithSingleProduct= async (order) => {
+  console.log(order);
+  const result = await axios.post(`http://localhost:8080/orders/singleProduct`, order);
+  return result.data;
+}
 
-  const res=await axios.post(`http://localhost:8080/users/${userId}`);
-  return res.data;
+export const createOrderByExcelSheet = async (order) => {
+  console.log(order);
+  const result = await axios.post(`http://localhost:8080/orders/excel`, order);
+  return result.data;
 
 }
 
-
-export const updateUser= async (userId, data) => {
-  //  console.log(data);
-  const res=await axios.put(`http://localhost:8080/users/${userId}`,data);
-  return res.data;
-
+export const getAllProductsForExcel = async () =>{
+  try{
+     return await axios.get(`http://localhost:8080/orders/excel`);
+  }catch(err){
+     console.log(err);
+  }
 }
 
+// update order
+export const updateOrder = async (order, orderId) => {
+//   const result = await privateAxios.put(
+//     `${API_ENDPOINTS.ORDERS}/${orderId}`,
+//     order
+//   );
+//   return result.data;
+};
 
 
+// add item to order
+export const updateOrderItemService = async (data) => {
+  console.log(data);
+  const res = await axios.post(`http://localhost:8080/orders/updateOrderItem`, data);
+//  console.log(res);
+  return res.data;
+};
 
+// remove item from cart
+export const removeItemFromOrder = async (orderItemId) => {
+  console.log(orderItemId);
+  try{
+   const res= await axios.delete(`http://localhost:8080/orders/item/${orderItemId}`);
+  //return res.data;
+  //console.log(res);
+  return res.data;
+  }catch(err){
+    
+  }
+};
 
+// remove all items from cart
+export const removeAllItemsFromOrder = async (userId) => {
+  // const res = await privateAxios.delete(`${API_ENDPOINTS.CARTS}/${userId}`);
+  //return res.data;
+  return "";
+};
