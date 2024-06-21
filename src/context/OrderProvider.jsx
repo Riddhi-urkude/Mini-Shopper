@@ -3,52 +3,74 @@ import { OrderContext } from "./OrderContext";
 import { useEffect } from "react";
 import { UserContext } from "./UserContext";
 import { useContext } from "react";
-import {
-  addItemToOrder,
-  getAllOrderByUserId,
-  removeAllItemsFromOrder,
-  removeItemFromOrder,
-} from "../services/order.service";
 import { toast } from "react-toastify";
 
-export const OrderProvider = ({ children }) => {
-  const { isLogin, userData } = useContext(UserContext);
-  const [order, setOrder] = useState(null);
-  
-  const fetchUserOrder = async (userId) => {
-    try {
-     // console.log("now it is called in cart provider");
-      const data = await getAllOrderByUserId(userId);
-      console.log(data);
-      setOrder(data);
-    } catch (error) {
-      setOrder({ items: [] });
-    }
-  };
 
-  // add item to cart
-  const addItem = async (data, next = () => {}) => {
+import {
+    updateOrderItemService,
+    removeItemFromOrder,
+    removeAllItemsFromOrder,
+    getOrderById,
+  } from "../services/order.service";
+
+
+import { getProductById } from "../services/product.service";
+
+
+
+export const OrderProvider = ({ children }) => {
+    const { isLogin, userData } = useContext(UserContext);
+    const [order, setOrder] = useState(null);
+    const [singleProduct, setSingleProduct]= useState(null);
+
+
+
+
+
+
+const addSingleProduct= async (data, next = () => {}) => {
     try {
-      const res = await addItemToOrder(data, userData.userId);
-      setOrder(res);
+    //   console.log(data);
+     
+//setOrder(data);
+      const product = await getProductById(data.productId);
+      product.quantity = data.quantity;
+    //  console.log(product);
+      setSingleProduct(product);
+    //   console.log(product);
       next();
     } catch (error) {
       toast.error("Error in adding item to order", {
         position: "bottom-right",
       });
     }
+ };
+
+ const updateOrderItem = async (data, next = () => {}) => {
+    try {
+        console.log(data);
+      const res = await updateOrderItemService(data);
+      setOrder(res);
+      next();
+    } catch (error) {
+      toast.error("Error in updating item to order", {
+        position: "bottom-right",
+      });
+    }
   };
 
   // remove item from cart
-  const removeItem = async (itemId) => {
+  const removeItem = async (itemId,  next = () => {}) => {
+    console.log(itemId);
     try {
-      const newOrder = order.items.filter((item) => item.orderItemId !== itemId);
-      setOrder({
-        ...order,
-        items: newOrder,
-      });
-      await removeItemFromOrder(userData.userId, itemId);
-     
+    //   const newOrder = order.items.filter((item) => item.orderItemId !== itemId);
+    //   setOrder({
+    //     ...order,
+    //     items: newOrder,
+    //   });
+     const res= await removeItemFromOrder(itemId);
+     setOrder(res);
+      next();
     } catch (error) {
       toast.error("Error in removing item from orders", {
         position: "bottom-right",
@@ -56,8 +78,8 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  // remove all items from cart
-  const removeAllItems = async () => {
+// remove all items from cart
+const removeAllItems = async () => {
     try {
       const data = await removeAllItemsFromOrder(userData.userId);
       console.log(data);
@@ -66,19 +88,19 @@ export const OrderProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    if (isLogin) {
-      // get user cart from database
-      fetchUserOrder(userData.userId);
-    }
-  }, [isLogin]);
+
+
 
   return (
     <OrderContext.Provider
       value={{
         order: order,
         setOrder: setOrder,
-        addItem: addItem,
+        singleProduct: singleProduct,
+        setSingleProduct: setSingleProduct,   
+        addSingleProduct: addSingleProduct,
+
+        updateOrderItem: updateOrderItem,
         removeItem: removeItem,
         removeAllItems: removeAllItems,
       }}
@@ -86,4 +108,6 @@ export const OrderProvider = ({ children }) => {
       {children}
     </OrderContext.Provider>
   );
-};
+}
+
+
