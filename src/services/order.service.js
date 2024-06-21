@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_ENDPOINTS } from "./helper.service";
+
 
 // get order by id
 export const getOrderById = async (orderId) => {
@@ -7,18 +7,6 @@ export const getOrderById = async (orderId) => {
   return result.data;
 };
 
-// get all orders
-export const getAllOrders = async (
-  pageNumber,
-  pageSize = API_ENDPOINTS.ORDER_PAGE_SIZE,
-  sortBy = "createdAt",
-  sortDir = "asc"
-) => {
-//   const result = await privateAxios.get(
-//     `${API_ENDPOINTS.ORDERS}?pageNumber=${pageNumber}&pageSize=${pageSize}&sortBy=${sortBy}&sortDir=${sortDir}`
-//   );
-//   return result.data;
-};
 
 // get all orders by user id
 export const getAllOrdersByUserId = async (userId) => {
@@ -34,6 +22,28 @@ export const createOrder = async (order) => {
    return result.data;
 };
 
+
+export const createOrderwithSingleProduct= async (order) => {
+  console.log(order);
+  const result = await axios.post(`http://localhost:8080/orders/singleProduct`, order);
+  return result.data;
+}
+
+export const createOrderByExcelSheet = async (order) => {
+  console.log(order);
+  const result = await axios.post(`http://localhost:8080/orders/excel`, order);
+  return result.data;
+
+}
+
+export const getAllProductsForExcel = async () =>{
+  try{
+     return await axios.get(`http://localhost:8080/orders/excel`);
+  }catch(err){
+     console.log(err);
+  }
+}
+
 // update order
 export const updateOrder = async (order, orderId) => {
 //   const result = await privateAxios.put(
@@ -43,18 +53,20 @@ export const updateOrder = async (order, orderId) => {
 //   return result.data;
 };
 
-// add item to order
-export const addItemToOrder = async (data, userId) => {
 
-  const res = await axios.post(`http://localhost:8080/orders/${userId}`, data);
+// add item to order
+export const updateOrderItemService = async (data) => {
+  console.log(data);
+  const res = await axios.post(`http://localhost:8080/orders/updateOrderItem`, data);
 //  console.log(res);
   return res.data;
 };
 
 // remove item from cart
-export const removeItemFromOrder = async (userId, itemId) => {
+export const removeItemFromOrder = async (orderItemId) => {
+  console.log(orderItemId);
   try{
-    const res = await axios.delete(`http://localhost:8080/order/${userId}/item/${itemId}`);
+   const res= await axios.delete(`http://localhost:8080/orders/item/${orderItemId}`);
   //return res.data;
   //console.log(res);
   return res.data;
@@ -67,5 +79,5 @@ export const removeItemFromOrder = async (userId, itemId) => {
 export const removeAllItemsFromOrder = async (userId) => {
   // const res = await privateAxios.delete(`${API_ENDPOINTS.CARTS}/${userId}`);
   //return res.data;
-  return cart;
+  return "";
 };
