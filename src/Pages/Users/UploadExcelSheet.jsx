@@ -1,50 +1,71 @@
 import React from "react";
+
 import * as XLSX from 'xlsx';
 import { Col, Container, Row, Form, Button, Spinner } from "react-bootstrap";
 import { useContext } from "react";
 import { UserContext } from "../../context/UserContext";
-import { CartContext } from "../../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useEffect } from "react";
 import { useFormik } from "formik";
 import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
+import Swal from "sweetalert2";
+import {createOrderByExcelSheet} from "../../services/order.service";
+import {getAllProductsForExcel} from "../../services/order.service";
 
 export const UploadExcelSheet = ({ onUpload }) => {
-    const handleFileChange = async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const formData = new FormData();
-            formData.append('file', file);
+   
+    const [excelData, setExcelData]=useState('');
+    
+    const [allProducts, setAllProducts] = useState('');
 
-            // Simulate file upload process replace with actual API call)
-            // Example assumes using fetch for simplicity
 
-            try {
-                const response = await fetch('your-api-endpoint', {
-                    method: 'POST',
-                    body: formData,
-                });
-                const data = await response.json();
-                onUpload(data); // handle response data as needed
-            } catch (error) {
-                console.error('Error uploading file:', error);
-            }
-        }
-    };
-
-    const handleFileSubmit=(e)=>{
-        e.preventDefault();
-        if(excelFile!==null){
-          const workbook = XLSX.read(excelFile,{type: 'buffer'});
-          const worksheetName = workbook.SheetNames[0];
-          const worksheet = workbook.Sheets[worksheetName];
-          const data = XLSX.utils.sheet_to_json(worksheet);
-          setExcelData(data.slice(0,10));
-        }
+    const fetchProductsLive = async (allProducts = '') => {
+      try {
+         const allProducts = await getAllProductsForExcel();
+         console.log(allProducts);
+         setAllProducts(allProducts);
+      }catch(err){
+        console.log(err);
+ 
+      }
     }
 
-    const { userData } = useContext(UserContext);
-  const { cart, setCart } = useContext(CartContext);
+    useEffect(() => {
+      fetchProductsLive(allProducts);
+    }, []);
+
+    const handleFileChange = async (e) => {
+
+      const reader = new FileReader();
+
+      reader.readAsBinaryString(e.target.files[0]);
+      reader.onload = (e) =>{
+        const excelFile= e.target.result;
+        
+        const workbook = XLSX.read(excelFile,{type: "binary"});
+        
+        const worksheetName = workbook.SheetNames[0];
+        
+        const worksheet = workbook.Sheets[worksheetName];
+        
+        const data = XLSX.utils.sheet_to_json(worksheet);
+
+        setExcelData(data);
+        
+
+        console.log(excelData);
+      }
+
+    };
+
+    const handleFileSubmit= async (e)=>{
+        e.preventDefault();
+
+    }
+    
+  const { userData } = useContext(UserContext);
+
   const navigate = useNavigate();
  
   // loading state for save button
@@ -69,21 +90,26 @@ export const UploadExcelSheet = ({ onUpload }) => {
  
   const placeOrder = async (data) => {
     try {
-//      console.log(data);
-      const result = await createOrder(data);
- 
-      setCart({ items: [] });
+      console.log(data);
+      const result = await createOrderByExcelSheet(data);
       Swal.fire({
         icon: "success",
         title: "Order placed successfully",
         timer: 2000,
       });
-      console.log(result.orderId);
-      navigate(`/order/${result.orderId}`);
+      // console.log(result.orderId);
+       navigate(`/order/${result.orderId}`);
     } catch (error) {
+      console.log(error);
+
+      let title="Unable to place order";
+      if(error.response.data.message){
+        title=error.response.data.message;
+      }
+
       Swal.fire({
         icon: "error",
-        title: "Unable to place order",
+        title: title,
         timer: 2000,
       });
     }
@@ -112,11 +138,11 @@ export const UploadExcelSheet = ({ onUpload }) => {
       setLoading(true);
       const data = {
         userId: userData.userId,
-        cartId: cart.cartId,
         orderStatus: "PENDING",
         paymentStatus: "NOT PAID",
         ...values,
         postalCode: values.postalCode.replace(/\s+/g, ""),
+        products : excelData,
       };
       placeOrder(data);
       actions.resetForm();
@@ -136,18 +162,18 @@ export const UploadExcelSheet = ({ onUpload }) => {
         <Col lg={6}>
           <Row>
             <Col>
-            <input type="file" accept=".xlsx, .xls" onClick={handleFileChange} />
+            <input type="file" accept=".xlsx, .xls" onChange={handleFileChange}/>
             <br />
             <br />
  
-            <button type="Submit" className="btn-outline-primary">Upload</button>
+            {/* <button type="Submit" className="btn-outline-primary" onClick={handleFileSubmit}  >Upload</button> */}
             </Col>
           </Row>
           </Col>
           </Row>
           
-              return (
-                <Row key={index} className="mb-3">
+              {/* return ( */}
+                <Row key={23132} className="mb-3">
                   {/* item image */}
                   <Col
                     xs={4}
@@ -287,7 +313,7 @@ export const UploadExcelSheet = ({ onUpload }) => {
                 // loading state for save button
                 hidden={!loading}
               ></Spinner>
-              <span>Proceed to Pay</span>
+              <span>Proceed Order</span>
             </Button>
           </Form>
         </Col>
