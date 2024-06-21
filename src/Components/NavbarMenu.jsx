@@ -88,14 +88,15 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
               Contact Us
             </Nav.Link>
 
-            <Nav.Link to="/UploadExcelSheet" onClick={toggleCollapse}>
-              Upload-ExcelSheet
-            </Nav.Link>
+           
 
           </Nav>
           <Nav>
               {userContext.isLogin ? (
                 <>
+                  <Nav.Link  as={NavLink} to="/UploadExcelSheet" onClick={toggleCollapse}>
+                        Upload-ExcelSheet
+                  </Nav.Link>
                   <Nav.Link as={NavLink} to="/cart" onClick={toggleCollapse}>
                     <i className="fa-solid fa-cart-shopping">Cart</i>
                     {cart && cart?.items.length === 0 ? (
@@ -145,5 +146,4 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
 };
 
 export default NavbarMenu
-
 
