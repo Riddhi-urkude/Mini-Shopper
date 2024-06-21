@@ -15,14 +15,20 @@ export const getProductById = async (productId) =>{
     const result = await axios.post(`http://localhost:8080/products/productId/${productId}`); 
      return result.data;
   } catch (err) {
+//    console.log(err);
     alert(err);
   }
 }
 
 export const getProductsByCategoryId = async (categoryId,page) =>{
+  // try {
+
    return  await axios.get(`http://localhost:8080/categories/${categoryId}/products`);
  // console.log(res.data);
-
+// } catch (err) {
+//   //    console.log(err);
+//       alert(err);
+//     }
 
 
 }
