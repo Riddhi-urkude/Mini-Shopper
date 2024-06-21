@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
-//import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
+import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import { useFormik } from "formik";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { useContext } from "react";
@@ -88,7 +88,7 @@ export const OrderCheckout = () => {
       state: "",
       postalCode: "",
     },
-//    validationSchema: placeOrderSchema,
+    validationSchema: placeOrderSchema,
     onSubmit: (values, actions) => {
       setLoading(true);
       const data = {
@@ -321,7 +321,7 @@ export const OrderCheckout = () => {
                 // loading state for save button
                 hidden={!loading}
               ></Spinner>
-              <span>Proceed to Pay</span>
+              <span>Proceed Order</span>
             </Button>
           </Form>
         </Col>
