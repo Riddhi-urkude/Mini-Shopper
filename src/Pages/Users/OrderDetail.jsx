@@ -5,25 +5,30 @@ import { OrderContext } from "../../context/OrderContext";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
-import { Card, Col, Container, Row } from "react-bootstrap";
+import { useContext } from "react";
+import {Button, Card, Col, Container, Row } from "react-bootstrap";
 //import { IKContext, IKImage } from "imagekitio-react";
 import { Loader } from "../../Components/Loader";
 
 export const OrderDetail = () => {
   document.title = "MINI-SHOPPER | View Order Details";
 
-  const { orders } = useContext(OrderContext);
-
+//  const { orders } = useContext(OrderContext);
+const { updateOrderItem, removeItem } = useContext(OrderContext);
   const { orderId } = useParams();
   console.log("order id "+orderId);
   const navigate = useNavigate();
 
   const [order, setOrder] = useState(null);
+
+  
   const [loading, setLoading] = useState(true);
 
+ 
   // fetch order by id
   const fetchOrder = async (orderId) => {
     try {
+      console.log("in fetch order");
       const data = await getOrderById(orderId);
       console.log(data);
       setOrder(data);
@@ -33,9 +38,19 @@ export const OrderDetail = () => {
     }
   };
 
+  const editOrder= async (data) => {
+    updateOrderItem(data);
+//    fetchOrder(orderId);
+  }
+  const handleRemoveItem = async (orderItemId) => {
+    console.log(orderItemId);
+    removeItem(orderItemId);
+   // fetchOrder(orderId);
+  };
+
   useEffect(() => {
     fetchOrder(orderId);
-  }, [orderId]);
+  }, [orderId, updateOrderItem, removeItem]);
 
   return (
     <Container className="mt-3">
@@ -116,7 +131,8 @@ export const OrderDetail = () => {
                           <Row>
                             <Col>
                               <p className="m-0">
-                                {order.user?.city}, {order.user?.province}
+                                {order.user?.city}
+                                {/* , {order.user?.province} */}
                               </p>
                             </Col>
                           </Row>
@@ -188,6 +204,7 @@ export const OrderDetail = () => {
               {order.orderItems.map((item, index) => {
                 return (
                   <Row key={index} className="mb-3">
+                    
                     <Col
                       xs={4}
                       sm={3}
@@ -237,7 +254,82 @@ export const OrderDetail = () => {
                         </Col>
                       </Row>
                     </Col>
+                    {/* Buttons */}
+                    {order.orderStatus==="PENDING" ? 
+            <Col
+              xs={7} sm={4} md={2} lg={2}
+              className="d-flex align-items-center justify-content-center"
+            >
+              <div className="w-100">
+                <div className="d-grid">
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={() => {
+                       handleRemoveItem(item.orderItemId);
+                    }}
+                  >
+                    Remove 
+                  </Button>
+                </div>
+                <div className="mt-2">
+                  <Row>
+                    <Col className="d-grid">
+                      {/* Decrease quantity */}
+                      <Button
+                        size="sm"
+                        onClick={(e) => {
+                          const newQuantity = item.quantity-1;
+                          if (newQuantity > 0) {
+                            const data = {
+                              orderItemId: item.orderItemId,
+                              productId: item.product.productId,
+                              quantity: newQuantity,
+                            };
+                            // update item in cart with new quantity
+                            editOrder(data);
+                           // updateOrderItem(data);
+                          } else {
+                            toast.info("Quantity can't be less than 1", {
+                              position: "bottom-right",
+                            });
+                          }
+                        }}
+                      >
+                        <i className="fa-solid fa-minus"> - </i>
+                      </Button>
+                    </Col>
+                    <Col className="d-grid">
+                      {/* Increase quantity */}
+                      <Button
+                        size="sm"
+                        onClick={() => {
+                          const newQuantity =   item.quantity + 1;
+                          if (newQuantity > 10) {
+                            toast.info("Quantity can't be more than 10", {
+                              position: "bottom-right",
+                            });
+                          } else {
+                            const data = {
+                              orderItemId: item.orderItemId,
+                              productId: item.product.productId,
+                              quantity: newQuantity,
+                            };
+                            // update item in cart with new quantity
+                            editOrder(data);
+                           // updateOrderItem(data);
+                          }
+                        }}
+                      >
+                        <i className="fa-solid fa-plus"> + </i>
+                      </Button>
+                    </Col>
                   </Row>
+                </div>
+              </div>
+            </Col> :<></>
+              }
+            </Row>
                 );
               })}
               <Row>
