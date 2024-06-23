@@ -139,6 +139,25 @@ export const UploadExcelSheet = ({ onUpload }) => {
             <Col>
             <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
             <br />
+
+               <br />
+
+            <Button
+                                                variant="success"
+                                                type="submit"
+                                                disabled={loading}
+                                                className="me-2 mb-3" 
+                                                >
+                                                  
+                                                  <Spinner
+                                                  animation="border"
+                                                  as="span"
+                                                  size="sm"
+                                                  className="me-2"
+                                                  hidden={!loading} 
+                                                  ></Spinner>
+                                                  <span>Upload</span>
+                                                  </Button>
             <br />
             </Col>
             </Row>
