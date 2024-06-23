@@ -12,10 +12,14 @@ import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import Swal from "sweetalert2";
 import {createOrderByExcelSheet} from "../../services/order.service";
 import {getAllProductsForExcel} from "../../services/order.service";
+import { ReactHTMLTableToExcel } from 'react-export-table-to-excel';
+
 
 export const UploadExcelSheet = ({ onUpload }) => {
    
     const [excelData, setExcelData]=useState('');
+
+    //const [result, setResult] = useState('');
     
     const [allProducts, setAllProducts] = useState('');
 
@@ -32,7 +36,8 @@ export const UploadExcelSheet = ({ onUpload }) => {
     }
 
     useEffect(() => {
-      fetchProductsLive(allProducts);
+      fetchProductsLive(allProducts)
+      .then(allProducts => setAllProducts(allProducts));
     }, []);
 
     const handleFileChange = async (e) => {
@@ -58,6 +63,16 @@ export const UploadExcelSheet = ({ onUpload }) => {
       }
 
     };
+
+    // const handleOnExport = () => {
+    //   //console.log(allProducts);
+    //   var wb = XLSX.utils.book_new(),
+    //   ws = XLSX.utils.json_to_sheet(allProducts);
+
+    //   XLSX.utils.book_append_sheet(wb, ws, "PlaceOrder");
+
+    //   XLSX.writeFile(wb, "MyExcel.xlxs");
+    // };
 
     const handleFileSubmit= async (e)=>{
         e.preventDefault();
@@ -171,6 +186,46 @@ export const UploadExcelSheet = ({ onUpload }) => {
           </Row>
           </Col>
           </Row>
+
+          <Row>
+            <Col>
+            <ReactHTMLTableToExcel
+              id="test-table-xls-button"
+              className="download-table-xls-button btn btn-success mb-3"
+              table="table-to-xls"
+              filename="tablexls"
+              sheet="tablexls"
+              buttonText="Export Data to Excel Sheet"/>
+
+              <table className="table" id="table-to-xls">
+                <thead className="thead-dark">
+                  <tr>
+                    <th>product_id</th>
+                    <th>brand</th>
+                    <th>category</th>
+                    <th>product_name</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allProducts.map((allProducts) =>
+                    <tr>
+                      <td>{allProducts.product_id}</td>
+                      <td>{allProducts.brand}</td>
+                      <td>{allProducts.category}</td>
+                      <td>{allProducts.product_name}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+
+              {/* <Button onClick={handleOnExport}>Export</Button> */}
+            </Col>
+          </Row>
+
+          <br />
+
+          <br />
+
           
               {/* return ( */}
                 <Row key={23132} className="mb-3">
