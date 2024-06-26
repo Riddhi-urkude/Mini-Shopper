@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getOrderById } from "../../services/order.service";
-import { OrderContext } from "../../context/OrderContext";
+import { getOrderById } from "../../Services/Order.Service";
+import { OrderContext } from "../../Context/OrderContext";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
@@ -103,7 +103,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                       <Row>
                         <Col>
                           <p className="m-0">
-                            {order.user.fname} {order.user.lname}
+                            {order.user.firstName} {order.user.lastName}
                           </p>
                         </Col>
                         <Col>
@@ -163,10 +163,13 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                     <Card.Body>
                       <Row>
                         <Col>
-                          <p className="m-0">{order.orderName}</p>
+                          <p className="m-0">{order.firstName}</p>
                         </Col>
                         <Col>
-                          <p className="m-0">{order.shippingPhone}</p>
+                          <p className="m-0">{order.lastName}</p>
+                        </Col>
+                        <Col>
+                          <p className="m-0">{order.phoneNumber}</p>
                         </Col>
                       </Row>
                       <Row>
