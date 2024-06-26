@@ -1,18 +1,19 @@
 import React, { useState } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
-import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
+import { placeOrderSchema } from "../../utils/Schema/PlaceOrderSchema";
 import { useFormik } from "formik";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { useContext } from "react";
-import { UserContext } from "../../context/UserContext";
-import { CartContext } from "../../context/CartContext";
-import { createOrder } from "../../services/order.service";
+import { UserContext } from "../../Context/UserContext";
+import { CartContext } from "../../Context/CartContext";
+import { createOrder } from "../../Services/Order.Service";
 import Swal from "sweetalert2";
 //import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate } from "react-router-dom";
+import { date } from "yup";
 
 export const OrderCheckout = () => {
-  document.title = "QuickPik | Finalize Your Purchase";
+  document.title = "MINI-SHOPPER | Finalize Your Purchase";
 
   const { userData } = useContext(UserContext);
   const { cart, setCart } = useContext(CartContext);
@@ -81,8 +82,9 @@ export const OrderCheckout = () => {
     errors,
   } = useFormik({
     initialValues: {
-      orderName: "",
-      shippingPhone: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
       shippingAddress: shippingAddress,
       city: "",
       state: "",
@@ -186,44 +188,67 @@ export const OrderCheckout = () => {
           </Row>
         </Col>
         <Col lg={6}>
+        <h3>Shipping Details</h3>
+        <hr />
           <Form noValidate onSubmit={handleSubmit}>
             <Row>
               <Form.Group
                 as={Col}
                 md={6}
-                controlId="orderName"
+                controlId="firstName"
                 className="mb-3"
               >
-                <Form.Label>Order Name</Form.Label>
+                <Form.Label>First Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Order Name"
+                  placeholder="First Name"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.orderName}
-                  isInvalid={touched.orderName && !!errors.orderName}
+                  value={values.firstName}
+                  isInvalid={touched.firstName && !!errors.firstName}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.orderName}
+                  {errors.firstName}
                 </Form.Control.Feedback>
               </Form.Group>
+
               <Form.Group
                 as={Col}
                 md={6}
-                controlId="shippingPhone"
+                controlId="lastName"
                 className="mb-3"
               >
-                <Form.Label>Shipping Phone</Form.Label>
+                <Form.Label>Last Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Shipping Phone"
+                  placeholder="Last Name"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.shippingPhone}
-                  isInvalid={touched.shippingPhone && !!errors.shippingPhone}
+                  value={values.lastName}
+                  isInvalid={touched.lastName && !!errors.lastName}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.shippingPhone}
+                  {errors.lastName}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group
+                as={Col}
+                md={6}
+                controlId="phoneNumber"
+                className="mb-3"
+              >
+                <Form.Label>Phone Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Phone Number"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.phoneNumber}
+                  isInvalid={touched.phoneNumber && !!errors.phoneNumber}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.phoneNumber}
                 </Form.Control.Feedback>
               </Form.Group>
             </Row>
