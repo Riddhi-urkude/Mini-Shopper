@@ -2,9 +2,9 @@ import { useFormik } from "formik";
 import React, { useState } from "react";
 import { useRef } from "react";
 import { Button, Col, Form, Row, Spinner } from "react-bootstrap";
-import { imageSchema } from "../../utils/schema/ImageSchema";
+// import { imageSchema } from "../../utils/schema/ImageSchema";
 import { useEffect } from "react";
-import { uploadImage } from "../../services/user.service";
+//import { uploadImage } from "../../services/user.service";
 import { toast } from "react-toastify";
 import { IKContext, IKImage } from "imagekitio-react";
 
@@ -22,22 +22,22 @@ export const ImageUpload = (props) => {
     initialValues: {
       image: null,
     },
-    validationSchema: imageSchema,
+    // validationSchema: imageSchema,
     onSubmit: (values, actions) => {
       // update image by calling the API
       setLoading(true);
-      uploadImage(values.image, props.userId)
-        .then((res) => {
-          toast.success("Image updated successfully");
-          setPreviewImage(res.message);
-          actions.resetForm();
-        })
-        .catch((err) => {
-          toast.error("Error updating image");
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      // uploadImage(values.image, props.userId)
+      //   .then((res) => {
+      //     toast.success("Image updated successfully");
+      //     setPreviewImage(res.message);
+      //     actions.resetForm();
+      //   })
+      //   .catch((err) => {
+      //     toast.error("Error updating image");
+      //   })
+      //   .finally(() => {
+      //     setLoading(false);
+      //   });
     },
   });
 
@@ -46,6 +46,7 @@ export const ImageUpload = (props) => {
   useEffect(() => {
     if (props.image !== null && typeof props.image == "object") {
       // if image is an object, it is a file show preview
+     // console.log("getting image in if useEffect");
       formik.setFieldValue("image", props.image);
       const reader = new FileReader();
       reader.readAsDataURL(props.image);
@@ -54,6 +55,7 @@ export const ImageUpload = (props) => {
       };
     } else if (props.image !== null && typeof props.image == "string") {
       // if image is a string, it is an imagekit url
+      // console.log("getting image in else if useEffect");
       setPreviewImage(props.image);
     }
   }, []);
