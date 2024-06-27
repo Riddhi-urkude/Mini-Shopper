@@ -1,16 +1,19 @@
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getProductById } from "../../services/product.service";
+import { getProductById } from "../../Services/Product.Service";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { Badge, Button, Col, Container, Form, Row } from "react-bootstrap";
 import { IKContext, IKImage } from "imagekitio-react";
 import { useContext } from "react";
-import { CartContext } from "../../context/CartContext";
-import { UserContext } from "../../context/UserContext";
+import { CartContext } from "../../Context/CartContext";
+import { UserContext } from "../../Context/UserContext";
+import {OrderContext} from "../../Context/OrderContext";
 import { Loader } from "../../Components/Loader";
 import { ShowHtml } from "../../Components/ShowHtml";
+
+import {createOrderwithSingleProduct} from "../../Services/Order.Service";
 
 export const SingleProductPage = () => {
   const [product, setProduct] = useState(null);
@@ -26,6 +29,8 @@ export const SingleProductPage = () => {
 
   // cart context
   const { addItem } = useContext(CartContext);
+
+  const { addSingleProduct} =useContext(OrderContext);
 
   // quantity state for product
   const [quantity, setQuantity] = useState(1);
@@ -71,8 +76,11 @@ export const SingleProductPage = () => {
       };
 
       // function call to add item to cart
-      addItem(data);
-      navigate(`/place-order`);
+      // addItem(data);
+      // navigate(`/place-order`);
+      addSingleProduct(data);
+     
+      navigate(`/order-single-product/${data}`);
 //      window.location.href = "/place-order";
     }
   };
@@ -120,6 +128,20 @@ export const SingleProductPage = () => {
                 style={{ objectFit: "cover", borderRadius: "6px" }}
               />
             </IKContext> */}
+            <img
+                 src={'data:image/jpeg;base64,' +product.image} 
+                transformation={[
+                  {
+                    height: 250,
+                    width: 420,
+                  },
+                ]}
+                loading="lazy"
+                width="100%"
+                height="100%"
+                style={{ objectFit: "cover", borderRadius: "6px" }}
+              />
+
           </Col>
           <Col md={7} lg={9}>
             <h5 className="text-muted fw-semibold mb-0">{product.brand}</h5>
@@ -129,6 +151,7 @@ export const SingleProductPage = () => {
               ""
             )}
             <h3 className="fw-semibold mb-0">{product.title}</h3> 
+            <h4 className="fw-semibold mb-0">{product.productName}</h4>
             <p>{product.shortDescription}</p>
 
             {/* Quantity */}
