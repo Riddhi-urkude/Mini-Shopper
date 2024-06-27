@@ -1,7 +1,7 @@
 import React from "react";
 import { useContext } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import { CartContext } from "../../context/CartContext";
+import { CartContext } from "../../Context/CartContext";
 import { SingleCartItem } from "../../Components/users/SingleCartItem";
 import { NavLink } from "react-router-dom";
 
@@ -23,6 +23,20 @@ export const ShoppingCart = () => {
 
   return (
     <Container className="mt-3">
+      <Row >
+        <Col>
+          <h3> Upload through ExcelSheet</h3>
+          <hr />
+          <Row>
+          <Col className="text-left">
+            <h6>You can also Order through Excel Sheet</h6>
+            <Button className="mb-3" as={NavLink} to="/UploadExcelSheet">Upload ExcelSheet</Button>
+          </Col>
+         
+        </Row>
+ 
+        </Col>
+        </Row>
       <Row>
         <Col>
           <h3>Shopping Cart ({cart?.items.length} items)</h3>
