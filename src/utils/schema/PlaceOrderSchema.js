@@ -5,13 +5,14 @@ export const placeOrderSchema = Yup.object().shape({
   firstName: Yup.string().required("Please provide a first name"),
   lastName: Yup.string().required("Please provide a last name"),
   
-    shippingAddress: Yup.string()
-  .min(10, "Address should be atleast 100 characters")
+  shippingAddress: Yup.string()
+  .min(10, "Address should be atleast 10 characters")
   .required("Address is required"),
   
   pinCode: Yup.string()
   .min(6, "Pincode should contain 6 Numbers")
   .max(6, "Pincode should not contain more than 6 Numbers")
+  .required("Pincode is required")
   .matches(REGEX_VALIDATIONS.POSTAL_CODE,
     "Pincode is required"),
     
