@@ -1,5 +1,5 @@
 import React from "react";
-import { getAllCategories } from "../services/categories.service";
+import { getAllCategories } from "../Services/Categories.Service";
 import { useState } from "react";
 import { useEffect } from "react";
 import { CategoryContext } from "./CategoryContext";
