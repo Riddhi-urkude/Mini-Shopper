@@ -2,8 +2,8 @@ import * as Yup from "yup";
 import { REGEX_VALIDATIONS } from "../regex";
 
 export const registerSchema = Yup.object().shape({
-  firstname: Yup.string().required("Please provide a first name"),
-  lastname: Yup.string().required("Please provide a last name"),
+  firstName: Yup.string().required("Please provide a first name"),
+  lastName: Yup.string().required("Please provide a last name"),
   email: Yup.string()
     .email("Please provide a valid email")
     .required("Please provide an email"),
