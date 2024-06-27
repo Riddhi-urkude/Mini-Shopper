@@ -33,20 +33,22 @@ export const SingleOrderView = ({ order }) => {
                     {/* <IKContext
                       urlEndpoint={process.env.REACT_APP_IMAGE_KIT_URL}
                       publicKey={process.env.REACT_APP_IMAGE_KIT_PUBLIC_KEY}
-                    >
-                      <IKImage
-                        path={`/products/${item.product.productImage}`}
-                        transformation={[
-                          {
-                            height: 200,
-                            width: 200,
-                          },
-                        ]}
-                        width="100%"
-                        height="100%"
-                        style={{ objectFit: "cover", borderRadius: "50%" }}
+                    > */}
+                      <img
+                        src={'data:image/jpeg;base64,' +item.product.image}   //${item.product.image}`}
+                        // transformation={[
+                        //   {
+                        //     height: 200,
+                        //     width: 200,
+                        //   },
+                        // ]}
+                        // width="100%"
+                        // height="undefined"
+                        width="130%"
+                        height="130%"
+                       // style={{width: "undefined", height: "undefined", flex: "1", objectFit: "cover", borderRadius: "50%" }}
                       />
-                    </IKContext> */}
+                    {/* </IKContext> */}
                   </Col>
                   {/* Product Details */}
                   <Col xs={12} md={8}>
@@ -68,7 +70,7 @@ export const SingleOrderView = ({ order }) => {
                       </Col>
                       <Col md={3}>
                         <small>
-                          Total Price: $ {item.totalPrice.toFixed(2)}
+                          Total Price: ₹ {item.totalPrice.toFixed(2)}
                         </small>
                       </Col>
                     </Row>
@@ -78,7 +80,7 @@ export const SingleOrderView = ({ order }) => {
             })}
             <Row className="mt-3">
               <Col>
-                <h6>Total Order Amount: $ {order.orderAmount.toFixed(2)}</h6>
+                <h6>Total Order Amount: ₹ {order.orderAmount.toFixed(2)}</h6>
               </Col>
             </Row>
             <Row>
