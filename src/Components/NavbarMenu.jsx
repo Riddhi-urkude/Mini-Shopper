@@ -7,9 +7,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import { Badge } from "react-bootstrap";
 
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../Context/UserContext";
 
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "../Context/CartContext";
 
 const NavbarMenu = ({ handleShowCategorySidebar }) => {
   const [expanded, setExpanded] = useState(false);
@@ -94,9 +94,9 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
           <Nav>
               {userContext.isLogin ? (
                 <>
-                  <Nav.Link  as={NavLink} to="/UploadExcelSheet" onClick={toggleCollapse}>
+                  {/* <Nav.Link  as={NavLink} to="/UploadExcelSheet" onClick={toggleCollapse}>
                         Upload-ExcelSheet
-                  </Nav.Link>
+                  </Nav.Link> */}
                   <Nav.Link as={NavLink} to="/cart" onClick={toggleCollapse}>
                     <i className="fa-solid fa-cart-shopping">Cart</i>
                     {cart && cart?.items.length === 0 ? (
