@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
 
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import { useFormik } from "formik";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { useContext } from "react";
-import { UserContext } from "../../context/UserContext";
-import { CartContext } from "../../context/CartContext";
-import { OrderContext } from "../../context/OrderContext";
-import { createOrderwithSingleProduct } from "../../services/order.service";
+import { UserContext } from "../../Context/UserContext";
+import { CartContext } from "../../Context/CartContext";
+import { OrderContext } from "../../Context/OrderContext";
+import { createOrderwithSingleProduct } from "../../Services/Order.Service";
 import Swal from "sweetalert2";
 //import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate,useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
+
+
+
+import { date } from "yup";
+import { getUserById } from "../../Services/User.Service";
 
 export const SingleProductCheckOut = () => {
   document.title = "QuickPik | Finalize Your Purchase";
@@ -29,6 +35,12 @@ export const SingleProductCheckOut = () => {
   const { cart, setCart } = useContext(CartContext);
   const navigate = useNavigate();
   
+
+
+  
+  const userContext = useContext(UserContext);
+  const [user, setUser] = useState(false);
+
 
   // loading state for save button
   const [loading, setLoading] = useState(false);
@@ -49,6 +61,40 @@ export const SingleProductCheckOut = () => {
     setFieldTouched("shippingAddress", true);
     setFieldValue("shippingAddress", inputValue);
   };
+
+  useEffect(() => {
+    getUserFromServer();
+  },[userContext.userData]);
+ 
+  const getUserFromServer = () => {
+    if(userContext.userData) {
+      const userId = userContext.userData.userId;
+ 
+      getUserById(userId)
+      .then((res) => {
+        console.log(res);
+        setUser(res);
+ 
+        setValues({
+          firstName: res.firstName,
+          lastName: res.lastName,
+          phoneNumber: res.phoneNumber,
+          shippingAddress: res.address+", "+res.street == null ? "":res.address+", "+res.street,
+          city: res.city == null ? "":res.city,
+          state: res.state == null ? "":res.state,
+          pinCode: res.pinCode == null ? "":res.pinCode,
+         
+         
+        });
+ 
+        res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
+      });
+    }
+  };
+
+
+
+
 
   const placeOrder = async (data) => {
     try {
@@ -71,24 +117,25 @@ export const SingleProductCheckOut = () => {
       });
     }
   };
-
   const {
     handleSubmit,
     handleChange,
     handleBlur,
     setFieldValue,
+    setValues,
     setFieldTouched,
     values,
     touched,
     errors,
   } = useFormik({
     initialValues: {
-      orderName: "",
-      shippingPhone: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: "",
       shippingAddress: shippingAddress,
       city: "",
       state: "",
-      postalCode: "",
+      pinCode: "",
     },
     validationSchema: placeOrderSchema,
     onSubmit: (values, actions) => {
@@ -99,7 +146,7 @@ export const SingleProductCheckOut = () => {
         orderStatus: "PENDING",
         paymentStatus: "NOT PAID",
         ...values,
-        postalCode: values.postalCode.replace(/\s+/g, ""),
+        pinCode: values.pinCode.replace(/\s+/g, ""),
         productId: singleProduct.productId,
         quantity: singleProduct.quantity,
       };
@@ -154,6 +201,17 @@ export const SingleProductCheckOut = () => {
                         style={{ objectFit: "cover", borderRadius: "50%" }}
                       />
                     </IKContext> */}
+                      <img
+         src={'data:image/jpeg;base64,' +singleProduct.image} 
+         alt={singleProduct.productName}
+          width="80%"
+          height="80%"
+          style={{
+            objectFit: "cover",
+            cursor: "pointer",
+            borderRadius: "50%",
+          }}
+        />
                   </Col>
                   {/* Product Details */}
                   <Col xs={8} sm={6} lg={9}>
@@ -175,7 +233,7 @@ export const SingleProductCheckOut = () => {
                       </Col>
                       <Col md={6}>
                         <small>
-                          Total Price: $ {singleProduct.discountedPrice != 0 ? (+singleProduct.quantity*singleProduct.discountedPrice)
+                          Total Price: ₹ {singleProduct.discountedPrice != 0 ? (+singleProduct.quantity*singleProduct.discountedPrice)
     :  (+singleProduct.quantity*singleProduct.unitPrice)}
                         </small>
                       </Col>
@@ -186,51 +244,72 @@ export const SingleProductCheckOut = () => {
                
           <Row className="mb-3">
             <Col>
-              <h4>Total Order Amount: $ {singleProduct.discountedPrice != 0 ? (+singleProduct.quantity*singleProduct.discountedPrice)
+              <h4>Total Order Amount: ₹ {singleProduct.discountedPrice != 0 ? (+singleProduct.quantity*singleProduct.discountedPrice)
     :  (+singleProduct.quantity*singleProduct.unitPrice)}</h4>
             </Col>
           </Row>
         </Col>
        }
         <Col lg={6}>
-          <Form noValidate onSubmit={handleSubmit}>
-            <Row>
+        <Form noValidate onSubmit={handleSubmit}>
+          <Row>
               <Form.Group
                 as={Col}
                 md={6}
-                controlId="orderName"
+                controlId="firstName"
                 className="mb-3"
               >
-                <Form.Label>Order Name</Form.Label>
+                <Form.Label>First Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Order Name"
+                  placeholder="First Name"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.orderName}
-                  isInvalid={touched.orderName && !!errors.orderName}
+                  value={values.firstName}
+                  isInvalid={touched.firstName && !!errors.firstName}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.orderName}
+                  {errors.firstName}
                 </Form.Control.Feedback>
               </Form.Group>
+
               <Form.Group
                 as={Col}
                 md={6}
-                controlId="shippingPhone"
+                controlId="lastName"
                 className="mb-3"
               >
-                <Form.Label>Shipping Phone</Form.Label>
+                <Form.Label>Last Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Shipping Phone"
+                  placeholder="Last Name"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.shippingPhone}
-                  isInvalid={touched.shippingPhone && !!errors.shippingPhone}
+                  value={values.lastName}
+                  isInvalid={touched.lastName && !!errors.lastName}
                 />
                 <Form.Control.Feedback type="invalid">
-                  {errors.shippingPhone}
+                  {errors.lastName}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group
+                as={Col}
+                md={6}
+                controlId="phoneNumber"
+                className="mb-3"
+              >
+                <Form.Label>Phone Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Phone Number"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.phoneNumber}
+                  isInvalid={touched.phoneNumber && !!errors.phoneNumber}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.phoneNumber}
                 </Form.Control.Feedback>
               </Form.Group>
             </Row>
@@ -297,19 +376,19 @@ export const SingleProductCheckOut = () => {
                     {errors.state}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group as={Col} controlId="postalCode" className="mb-3">
-                  <Form.Label>Postal Code</Form.Label>
+                <Form.Group as={Col} controlId="pinCode" className="mb-3">
+                  <Form.Label>PinCode</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Postal Code"
-                    autoComplete="postal-code"
+                    placeholder="PinCode"
+                    autoComplete="pinCode"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.postalCode}
-                    isInvalid={touched.postalCode && !!errors.postalCode}
+                    value={values.pinCode}
+                    isInvalid={touched.pinCode && !!errors.pinCode}
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.postalCode}
+                    {errors.pinCode}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
