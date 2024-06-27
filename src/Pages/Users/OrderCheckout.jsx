@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, {useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
-import { placeOrderSchema } from "../../utils/Schema/PlaceOrderSchema";
+import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import { useFormik } from "formik";
 import { AddressAutofill } from "@mapbox/search-js-react";
 import { useContext } from "react";
@@ -10,14 +10,25 @@ import { createOrder } from "../../Services/Order.Service";
 import Swal from "sweetalert2";
 //import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate } from "react-router-dom";
+
+
 import { date } from "yup";
+import { getUserById } from "../../Services/User.Service";
 
 export const OrderCheckout = () => {
-  document.title = "MINI-SHOPPER | Finalize Your Purchase";
+  document.title = "QuickPik | Finalize Your Purchase";
 
   const { userData } = useContext(UserContext);
   const { cart, setCart } = useContext(CartContext);
   const navigate = useNavigate();
+  console.log(userData);
+
+
+  const userContext = useContext(UserContext);
+  const [user, setUser] = useState(false);
+
+
+
 
   // get total amount of cart
   const getTotalAmount = () => {
@@ -49,6 +60,42 @@ export const OrderCheckout = () => {
     setFieldValue("shippingAddress", inputValue);
   };
 
+
+  useEffect(() => {
+    getUserFromServer();
+  },[userContext.userData]);
+ 
+  const getUserFromServer = () => {
+    if(userContext.userData) {
+      const userId = userContext.userData.userId;
+ 
+      getUserById(userId)
+      .then((res) => {
+        console.log(res);
+        setUser(res);
+ 
+        setValues({
+          firstName: res.firstName,
+          lastName: res.lastName,
+          phoneNumber: res.phoneNumber,
+          shippingAddress: res.address+", "+res.street == null ? "":res.address+", "+res.street,
+          city: res.city == null ? "":res.city,
+          state: res.state == null ? "":res.state,
+          pinCode: res.pinCode == null ? "":res.pinCode,
+         
+         
+        });
+ 
+        res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
+      });
+    }
+  };
+
+
+
+
+
+
   const placeOrder = async (data) => {
     try {
 //      console.log(data);
@@ -75,6 +122,7 @@ export const OrderCheckout = () => {
     handleSubmit,
     handleChange,
     handleBlur,
+    setValues,
     setFieldValue,
     setFieldTouched,
     values,
@@ -85,22 +133,25 @@ export const OrderCheckout = () => {
       firstName: "",
       lastName: "",
       phoneNumber: "",
+      //address: "",
       shippingAddress: shippingAddress,
       city: "",
       state: "",
-      postalCode: "",
+      pinCode: "",
     },
     validationSchema: placeOrderSchema,
     onSubmit: (values, actions) => {
       setLoading(true);
+
       const data = {
         userId: userData.userId,
         cartId: cart.cartId,
         orderStatus: "PENDING",
         paymentStatus: "NOT PAID",
         ...values,
-        postalCode: values.postalCode.replace(/\s+/g, ""),
+        pinCode: values.pinCode.replace(/\s+/g, ""),
       };
+      console.log(data);
       placeOrder(data);
       actions.resetForm();
       setLoading(false);
@@ -152,6 +203,19 @@ export const OrderCheckout = () => {
                         style={{ objectFit: "cover", borderRadius: "50%" }}
                       />
                     </IKContext> */}
+                    
+                    <img
+         src={'data:image/jpeg;base64,' +item.product.image} 
+         alt={item.productName}
+          width="80%"
+          height="80%"
+          style={{
+            objectFit: "cover",
+            cursor: "pointer",
+            borderRadius: "50%",
+          }}
+        />
+
                   </Col>
                   {/* Product Details */}
                   <Col xs={8} sm={6} lg={9}>
@@ -173,7 +237,7 @@ export const OrderCheckout = () => {
                       </Col>
                       <Col md={6}>
                         <small>
-                          Total Price: $ {item.totalPrice.toFixed(2)}
+                          Total Price: ₹ {item.totalPrice.toFixed(2)}
                         </small>
                       </Col>
                     </Row>
@@ -183,15 +247,13 @@ export const OrderCheckout = () => {
             })}
           <Row className="mb-3">
             <Col>
-              <h4>Total Order Amount: $ {getTotalAmount()}</h4>
+              <h4>Total Order Amount: ₹ {getTotalAmount()}</h4>
             </Col>
           </Row>
         </Col>
         <Col lg={6}>
-        <h3>Shipping Details</h3>
-        <hr />
           <Form noValidate onSubmit={handleSubmit}>
-            <Row>
+          <Row>
               <Form.Group
                 as={Col}
                 md={6}
@@ -272,7 +334,7 @@ export const OrderCheckout = () => {
                     type="text"
                     placeholder="Shipping Address"
                     autoComplete="address-line-1"
-                    value={shippingAddress}
+                     value={shippingAddress}
                     onChange={handleAddressInputChange}
                     onBlur={handleAddressInputBlur}
                     isInvalid={
@@ -315,19 +377,19 @@ export const OrderCheckout = () => {
                     {errors.state}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group as={Col} controlId="postalCode" className="mb-3">
-                  <Form.Label>Postal Code</Form.Label>
+                <Form.Group as={Col} controlId="pinCode" className="mb-3">
+                  <Form.Label>PinCode</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Postal Code"
-                    autoComplete="postal-code"
+                    placeholder="Pin Code"
+                    autoComplete="pinCode"
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    value={values.postalCode}
-                    isInvalid={touched.postalCode && !!errors.postalCode}
+                    value={values.pinCode}
+                    isInvalid={touched.pinCode && !!errors.pinCode}
                   />
                   <Form.Control.Feedback type="invalid">
-                    {errors.postalCode}
+                    {errors.pinCode}
                   </Form.Control.Feedback>
                 </Form.Group>
               </Row>
