@@ -8,7 +8,7 @@ import {
   getCartByUserId,
   removeAllItemsFromCart,
   removeItemFromCart,
-} from "../services/cart.service";
+} from "../Services/Cart.Service";
 import { toast } from "react-toastify";
 
 export const CartProvider = ({ children }) => {
@@ -19,7 +19,7 @@ export const CartProvider = ({ children }) => {
     try {
      // console.log("now it is called in cart provider");
       const data = await getCartByUserId(userId);
-    //  console.log(data);
+     // console.log(data);
       setCart(data);
     } catch (error) {
       setCart({ items: [] });
@@ -29,7 +29,9 @@ export const CartProvider = ({ children }) => {
   // add item to cart
   const addItem = async (data, next = () => {}) => {
     try {
+      console.log(data);
       const res = await addItemToCart(data, userData.userId);
+
       setCart(res);
       next();
     } catch (error) {
