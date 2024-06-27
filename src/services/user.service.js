@@ -1,5 +1,6 @@
 import axios from "axios";
-import  { useEffect } from "react";
+import { publicAxiosInstance, privateAxiosInstance } from "./Axios.Service";
+
 
 export const registerUser= async (data)=> {
       data.userId=data.email;
@@ -8,7 +9,7 @@ export const registerUser= async (data)=> {
     // data.password="Kishore@123";
       console.log(data);
    //  try{
-        return await axios.post("http://localhost:8080/users/newUser", data);
+        return await publicAxiosInstance.post("/users/newUser", data);
         //.then((res)=>{console.log("response in user service "+res)});
     //  }catch(err){
     //   console.log("error "+err);
@@ -32,7 +33,8 @@ export const loginUser= async(data)=>{
     // const login={};//"dineshkumar@gmail.com";
     //data.userId=null;
   //  try {
-     return await axios.post(`http://localhost:8080/users/loginUser`, data);
+     const result = await publicAxiosInstance.post(`/users/loginUser`, data);
+     return result;
      // console.log("result "+result.data);
     // } catch (err) {
     //   console.log("in service ");
@@ -53,7 +55,7 @@ export const loginUser= async(data)=>{
 
 export const getUserById= async (userId) => {
 
-  const res=await axios.post(`http://localhost:8080/users/${userId}`);
+  const res=await privateAxiosInstance.post(`/users/${userId}`);
   return res.data;
 
 }
@@ -61,7 +63,7 @@ export const getUserById= async (userId) => {
 
 export const updateUser= async (userId, data) => {
   //  console.log(data);
-  const res=await axios.put(`http://localhost:8080/users/${userId}`,data);
+  const res=await privateAxiosInstance.put(`/users/${userId}`,data);
   return res.data;
 
 }
