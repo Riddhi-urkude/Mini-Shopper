@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { getAllProducts } from "../../services/product.service";
+import { getAllProducts } from "../../Services/Product.Service";
 import { Container, Row, Spinner } from "react-bootstrap";
 import { Loader } from "../../Components/Loader";
 import { ProductCard } from "../../Components/users/ProductCard";
