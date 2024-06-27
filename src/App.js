@@ -6,45 +6,41 @@ import Home from "./Pages/Home";
 import { About } from "./Pages/About";
 import { useState } from "react";
 import Contact from "./Pages/Contact";
- 
+
 import { CategorySideBar } from "./Components/CategorySideBar";
-import { CategoryProductsPage } from "./Pages/Users/CategoryProductsPage";
- 
-import UserProvider from "./context/UserProvider";
-import { CategoryProvider } from "./context/CategoryProvider";
-import { Products } from "./Pages/Users/Products";
-import { SingleProductPage } from "./Pages/Users/SingleProductPage";
- 
-import Profile from "./Pages/Users/Profile";
-import { ShoppingCart } from "./Pages/Users/ShoppingCart";
-import { CartProvider } from "./context/CartProvider";
-import { OrderCheckout } from "./Pages/Users/OrderCheckout"
-import { Orders } from "./Pages/Users/Orders";
-import { OrderDetail } from "./Pages/Users/OrderDetail"
-import { UploadExcelSheet } from "./Pages/Users/UploadExcelSheet"
+import {CategoryProductsPage} from "./Pages/users/CategoryProductsPage";
+
+import UserProvider from "./Context/UserProvider";
+import { CategoryProvider } from "./Context/CategoryProvider";
+import {Products} from "./Pages/users/Products";
+import {SingleProductPage} from "./Pages/users/SingleProductPage";
+
+import Profile from "./Pages/users/Profile";
+import { ShoppingCart } from "./Pages/users/ShoppingCart";
+import { CartProvider } from "./Context/CartProvider";
+import {OrderProvider } from "./Context/OrderProvider";
+import {OrderCheckout} from "./Pages/users/OrderCheckout";
+import { Orders } from "./Pages/users/Orders";
+import { OrderDetail } from "./Pages/users/OrderDetail";
+import {SingleProductCheckOut} from "./Pages/users/SingleProductCheckOut";
+import {UploadExcelSheet} from "./Pages/users/UploadExcelSheet";
 
 import PrivateRoutes from "./Components/auth/PrivateRoutes";
- 
+
 const App = () => {
   // state for category sidebar
   const [showCategorySidebar, setShowCategorySidebar] = useState(false);
- 
+
   // functions for category sidebar
   const handleCloseCategorySidebar = () => setShowCategorySidebar(false);
   const handleShowCategorySidebar = () => setShowCategorySidebar(true);
 
-  const [orders, SetOrders] = useState([]);
 
-  // const handleAddOrder = (newOrders) => {
-  //   SetOrders([...orders, newOrder]);
-  //   // Handle saving order to backend or local storage as needed
-  // };
- 
- 
   return (
     <div>
       <UserProvider>
         <CartProvider>
+          <OrderProvider>
       {/* <NavbarMenu/> */}
       <CategoryProvider>
             <NavbarMenu
@@ -62,17 +58,17 @@ const App = () => {
               <Route path="/about" element={<About />}></Route>
               <Route path="/contact" element={<Contact />}></Route>
               <Route path="/products" element={<Products />}></Route>
- 
+
               <Route
                 path="/product/:productId"
                 element={<SingleProductPage />}
               ></Route>
-           
+            
              <Route
                 path="/category/:categoryId/products"
                 element={<CategoryProductsPage />}
               ></Route>
- 
+
               <Route
                 element={
                   <PrivateRoutes  />
@@ -80,11 +76,14 @@ const App = () => {
               >
                  <Route path="/profile" element={<Profile/>}></Route>
                <Route path="/cart" element={<ShoppingCart />}></Route>
+               
+               <Route path="/order-single-product/:data" element={<SingleProductCheckOut/>}></Route>
+
                <Route path="/place-order" element={<OrderCheckout />}></Route>
                <Route path="/UploadExcelSheet" element={<UploadExcelSheet />}></Route>
                <Route path="/orders" element={<Orders />}></Route>
                <Route path="/order/:orderId" element={<OrderDetail />}></Route>
-               </Route>
+               </Route> 
               {/* Routes only admin and logged in user can access*/}
                {/* <Route
                 element={
@@ -93,14 +92,15 @@ const App = () => {
               >
                 <Route path="/profile" element={<Profile />}></Route>
                </Route>  */}
-              </Routes>
+              </Routes> 
         {/* </AuthProvider> */}
         </CategoryProvider>
+        </OrderProvider>
         </CartProvider>
         </UserProvider>
     </div>
-   
+    
   );
 };
- 
+
 export default App;
