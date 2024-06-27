@@ -4,11 +4,12 @@ import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { loginSchema } from "../utils/schema/LoginSchema.js";
 import { useState } from "react";
-import { loginUser } from "../services/user.service";
+import { loginUser } from "../Services/User.Service.js";
+
 //import { googleLogin } from "../services/user.service";
 import { toast } from "react-toastify";
 import { ROLES } from "../utils/roles";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../Context/UserContext";
 import { useContext } from "react";
 //import { GoogleLogin } from "@react-oauth/google";
 
@@ -40,23 +41,25 @@ export const Login = () => {
             // console.log("response in login page "+res.data.message);
             // console.log("response in login page "+res.data.statusMessage);
             // console.log("response in login page "+res.data.status);
-            //console.log(res);
-
-            if(res.data.message=="Login Success"){
+            console.log(res);
+               
+            if(res.status==200){
               toast.success("Login successfully!");
              
     
-              navigate("/");
+              navigate("/profile");
             }
              actions.resetForm();
              const { ...responseUser } = res.data.user;
             // console.log(responseUser);
-              // const tokens = {
-              //  accessToken: "",
-              //  refreshToken: "",
-              // };
+              const tokens = {
+               accessToken: res.data.accessToken,
+               refreshToken: res.data.refreshToken,
+              };
              //  set user data and login status in user context
-             userContext.doLogin(responseUser);
+             console.log(responseUser);
+             console.log(tokens);
+             userContext.doLogin(responseUser, tokens);
          
 
           
@@ -74,10 +77,9 @@ export const Login = () => {
            })
           .catch((err) => {
             // unauthorised login error
-            if (err.response.status === 401) {
-              toast.error(err.response.data.message);
-            }else if(err.response.status === 404){
-              toast.error(err.response.data.message);
+            console.log(err);
+            if (err.response.status === 403) {
+              toast.error("You have entered a Invalid UserId or password");
             } else {
               toast.error("Something went wrong! Please try again later");
             }
@@ -174,20 +176,7 @@ export const Login = () => {
         </small>
       </Form>
 
-      {/* OR */}
-      {/* <Row className="align-items-center justify-content-center">
-        <Col xs={5} className="text-right">
-          <hr />
-        </Col>
-        <Col xs={2} className="text-center">
-          <small>OR</small>
-        </Col>
-        <Col xs={5} className="text-left">
-          <hr />
-        </Col>
-      </Row> */}
-      {/* Google Login */}
-      
+     
     </Container>
   );
 };
