@@ -20,7 +20,7 @@ export const profileSchema = Yup.object().shape({
   .min(6, "Pincode should contain 6 Numbers")
   .max(6, "Pincode should not contain more than 6 Numbers")
   .matches(REGEX_VALIDATIONS.POSTAL_CODE,
-    "Pincode is required"),
+    "Please enter valid Pincode").required("Please provide a postal code"),
  
   city: Yup.string().required("City is required"),
  
