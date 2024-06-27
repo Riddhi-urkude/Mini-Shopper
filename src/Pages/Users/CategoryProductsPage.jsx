@@ -1,11 +1,11 @@
 import React from "react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getCategoryById } from "../../services/categories.service";
+import { getCategoryById } from "../../Services/Categories.Service";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
-import { getProductsByCategoryId } from "../../services/product.service";
+import { getProductsByCategoryId } from "../../Services/Product.Service";
 import { ProductCard } from "../../Components/users/ProductCard";
 //import InfiniteScroll from "react-infinite-scroll-component";
 import { Loader } from "../../Components/Loader";
@@ -81,10 +81,10 @@ export const CategoryProductsPage = () => {
         <Loader show={loading} />
       ) : (
         <>
-          {category && (
-            <Container fluid>
+          {/* {category && ( */}
+            {/* <Container fluid>
               <Row className="mb-4">
-                {/* Category Image header */}
+                Category Image header
                 <Col className="p-0">
                   <div
                     className="d-flex justify-content-center align-items-center position-relative"
@@ -111,8 +111,8 @@ export const CategoryProductsPage = () => {
                   </div>
                 </Col>
               </Row>
-            </Container>
-          )}
+            </Container> */}
+          {/* )} */}
           {products &&
             (products.data.length === 0 ? (
               // if no products found
