@@ -28,7 +28,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
   // fetch order by id
   const fetchOrder = async (orderId) => {
     try {
-      console.log("in fetch order");
+      //console.log("in fetch order");
       const data = await getOrderById(orderId);
       console.log(data);
       setOrder(data);
@@ -103,7 +103,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                       <Row>
                         <Col>
                           <p className="m-0">
-                            {order.user.firstName} {order.user.lastName}
+                            {order.user.fname} {order.user.lname}
                           </p>
                         </Col>
                         <Col>
@@ -160,7 +160,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                 {/* Shipping Details Card */}
                 <Col md={8}>
                   <Card>
-                    <Card.Body>
+                  <Card.Body>
                       <Row>
                         <Col>
                           <p className="m-0">{order.firstName}</p>
@@ -214,23 +214,24 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                       xl={2}
                       className="d-flex align-items-center justify-content-center"
                     >
-                      {/* <IKContext
+                       {/* <IKContext
                         urlEndpoint={process.env.REACT_APP_IMAGE_KIT_URL}
                         publicKey={process.env.REACT_APP_IMAGE_KIT_PUBLIC_KEY}
-                      >
-                        <IKImage
-                          path={`/products/${item.product.productImage}`}
-                          transformation={[
-                            {
-                              height: 200,
-                              width: 200,
-                            },
-                          ]}
-                          width="100%"
-                          height="100%"
-                          style={{ objectFit: "cover", borderRadius: "50%" }}
-                        />
-                      </IKContext> */}
+                      > */}
+                          <img
+                        src={'data:image/jpeg;base64,' +item.product.image}   //${item.product.image}`}
+                        // transformation={[
+                        //   {
+                        //     height: 200,
+                        //     width: 200,
+                        //   },
+                        // ]}
+                        // width="100%"
+                        // height="undefined"
+                        style={{width: "100%", height: "100%", aspectRatio: "1", objectFit: "cover", borderRadius: "50%" }}
+                        // style={{ flex: "1", objectFit: "cover", borderRadius: "50%" }}
+                      />
+                       {/* </IKContext>  */}
                     </Col>
                     {/* Product Details */}
                     <Col xs={8} sm={6} md={12} lg={9}>
@@ -252,13 +253,13 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                         </Col>
                         <Col md={6}>
                           <small>
-                            Total Price: $ {item.totalPrice.toFixed(2)}
+                            Total Price: ₹ {item.totalPrice.toFixed(2)}
                           </small>
                         </Col>
                       </Row>
                     </Col>
                     {/* Buttons */}
-                    {order.orderStatus==="PENDING" ? 
+                    {order.orderStatus==="hcjv" ? 
             <Col
               xs={7} sm={4} md={2} lg={2}
               className="d-flex align-items-center justify-content-center"
@@ -338,7 +339,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
               <Row>
                 <Col>
                   <hr />
-                  <h4>Total Order Amount: $ {order.orderAmount.toFixed(2)}</h4>
+                  <h4>Total Order Amount: ₹ {order.orderAmount.toFixed(2)}</h4>
                 </Col>
               </Row>
             </Col>
