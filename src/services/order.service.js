@@ -1,16 +1,18 @@
 import axios from "axios";
 
+import { publicAxiosInstance, privateAxiosInstance } from "./Axios.Service";
+
 
 // get order by id
 export const getOrderById = async (orderId) => {
-  const result = await axios.get(`http://localhost:8080/orders/${orderId}`);
+  const result = await privateAxiosInstance.get(`/orders/${orderId}`);
   return result.data;
 };
 
 
 // get all orders by user id
 export const getAllOrdersByUserId = async (userId) => {
-  const result = await axios.get(`http://localhost:8080/orders/user/${userId}`);
+  const result = await privateAxiosInstance.get(`/orders/user/${userId}`);
    return result.data;
 };
 
@@ -18,27 +20,27 @@ export const getAllOrdersByUserId = async (userId) => {
 export const createOrder = async (order) => {
     console.log("coming inside create order" );
     console.log(order);
-   const result = await axios.post(`http://localhost:8080/orders`, order);
-   return result.data;
+   const result = await privateAxiosInstance.post(`/orders`, order);
+    return result.data;
 };
 
 
 export const createOrderwithSingleProduct= async (order) => {
   console.log(order);
-  const result = await axios.post(`http://localhost:8080/orders/singleProduct`, order);
+  const result = await privateAxiosInstance.post(`/orders/singleProduct`, order);
   return result.data;
 }
 
 export const createOrderByExcelSheet = async (order) => {
   console.log(order);
-  const result = await axios.post(`http://localhost:8080/orders/excel`, order);
+  const result = await privateAxiosInstance.post(`/orders/excel`, order);
   return result.data;
 
 }
 
 export const getAllProductsForExcel = async () =>{
   try{
-     return await axios.get(`http://localhost:8080/orders/excel`);
+     return await privateAxiosInstance.get(`/orders/excel`);
   }catch(err){
      console.log(err);
   }
@@ -57,7 +59,7 @@ export const updateOrder = async (order, orderId) => {
 // add item to order
 export const updateOrderItemService = async (data) => {
   console.log(data);
-  const res = await axios.post(`http://localhost:8080/orders/updateOrderItem`, data);
+  const res = await privateAxiosInstance.post(`/orders/updateOrderItem`, data);
 //  console.log(res);
   return res.data;
 };
@@ -66,7 +68,7 @@ export const updateOrderItemService = async (data) => {
 export const removeItemFromOrder = async (orderItemId) => {
   console.log(orderItemId);
   try{
-   const res= await axios.delete(`http://localhost:8080/orders/item/${orderItemId}`);
+   const res= await privateAxiosInstance.delete(`/orders/item/${orderItemId}`);
   //return res.data;
   //console.log(res);
   return res.data;
