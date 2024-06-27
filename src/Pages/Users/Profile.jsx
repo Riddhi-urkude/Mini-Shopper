@@ -12,10 +12,10 @@ import {
 import { SideBar } from "../../Components/SideBar";
 //import { AddressAutofill } from "@mapbox/search-js-react";
 import { useFormik } from "formik";
-import { UserContext } from "../../context/UserContext";
-// import { profileSchema } from "../../utils/schema/ProfileSchema";
+import { UserContext } from "../../Context/UserContext";
+import { profileSchema } from "../../utils/schema/ProfileSchema";
 import { useEffect } from "react";
-import { getUserById, updateUser } from "../../services/user.service";
+import { getUserById, updateUser } from "../../Services/User.Service";
 import { toast } from "react-toastify";
 import { ImageUpload } from "../../Components/users/ImageUpload";
 
@@ -143,17 +143,18 @@ const Profile = () => {
       pinCode: "",
       image: "",
     },
-    // validationSchema: profileSchema,
+    validationSchema: profileSchema,
     onSubmit: (values) => {
       // set loading state to true
       setLoading(true);
-      //console.log(values);
+      console.log("in profile jsx");
+      console.log(values);
       const data = {
         ...values,
         email: userContext.userData.email,
         pincode: values.pinCode.replace(/\s+/g, ""), // removes all whitespace from postal code input
       };
-
+      console.log(data);
       // update user data in database
       setLoading(true);
       updateUser(userContext.userData.userId, data)
@@ -190,11 +191,11 @@ const Profile = () => {
 //                className="fa-solid fa-bars me-2"
                 style={{ cursor: "pointer" }}
                 onClick={handleShow}
-              ></i>
-              Profilee
+              >Profile</i>
+
             </h2>
             <h3>
-              ${userContext.userData.email}
+              {userContext.userData.email}
 
 
             </h3>
@@ -390,11 +391,11 @@ const Profile = () => {
                       md={4}
                       className="mb-3"
                     >
-                      <Form.Label>Postal Code</Form.Label>
+                      <Form.Label>PinCode</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="pinCode"
-                        autoComplete="postal-code"
+                        placeholder="PinCode"
+                        autoComplete="pincode"
                         value={values.pinCode}
                         onChange={handleChange}
                         onBlur={handleBlur}
