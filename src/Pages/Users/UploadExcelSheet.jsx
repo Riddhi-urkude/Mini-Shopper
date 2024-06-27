@@ -2,12 +2,15 @@ import React, { useState, useEffect, useContext } from "react";
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { Col, Container, Row, Form, Button, Spinner } from "react-bootstrap";
-import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import Swal from "sweetalert2";
-import { createOrderByExcelSheet, getAllProductsForExcel } from "../../services/order.service";
+import { createOrderByExcelSheet, getAllProductsForExcel } from "../../Services/Order.Service";
+
+import { date } from "yup";
+import { getUserById } from "../../Services/User.Service";
 
 export const UploadExcelSheet = ({ onUpload }) => {     
   const [excelData, setExcelData] = useState([]);     
@@ -16,12 +19,30 @@ export const UploadExcelSheet = ({ onUpload }) => {
   const navigate = useNavigate();     
   const [loading, setLoading] = useState(false);     
   const [shippingAddress, setShippingAddress] = useState("");     
+
+
+
+  
+
+  const userContext = useContext(UserContext);
+  const [user, setUser] = useState(false);
+
   
   const fetchProductsLive = async () => {         
     try {             
       const products = await getAllProductsForExcel();
-      console.log(allProducts)             
-      setAllProducts(allProducts);         
+      console.log(products.data);
+     // console.log(allProducts)             
+      const addedQuantity=products.data.map((d)=>{
+        let tempData=d;
+        tempData.quantity =0;
+        tempData.image="";
+        return tempData;
+      });
+
+      console.log(addedQuantity);
+      setAllProducts(addedQuantity);
+
     } catch (err) {             
       console.log(err);         
     }    
@@ -39,7 +60,10 @@ export const UploadExcelSheet = ({ onUpload }) => {
       const workbook = XLSX.read(excelFile, { type: "binary" });             
       const worksheetName = workbook.SheetNames[0];             
       const worksheet = workbook.Sheets[worksheetName];             
-      const data = XLSX.utils.sheet_to_json(worksheet);             
+      const data = XLSX.utils.sheet_to_json(worksheet);     
+
+
+
       setExcelData(data);         
     };    
   };     
@@ -60,8 +84,48 @@ export const UploadExcelSheet = ({ onUpload }) => {
     setFieldValue("shippingAddress", inputValue);     
   };     
   
+
+
+
+
+
+  useEffect(() => {
+    getUserFromServer();
+  },[userContext.userData]);
+ 
+  const getUserFromServer = () => {
+    if(userContext.userData) {
+      const userId = userContext.userData.userId;
+ 
+      getUserById(userId)
+      .then((res) => {
+        console.log(res);
+        setUser(res);
+ 
+        setValues({
+          firstName: res.firstName,
+          lastName: res.lastName,
+          phoneNumber: res.phoneNumber,
+          shippingAddress: res.address+", "+res.street == null ? "":res.address+", "+res.street,
+          city: res.city == null ? "":res.city,
+          state: res.state == null ? "":res.state,
+          pinCode: res.pinCode == null ? "":res.pinCode,
+         
+         
+        });
+ 
+        res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
+      });
+    }
+  };
+
+
+
+
+
   const placeOrder = async (data) => {         
     try {             
+     // console.log(data);
       const result = await createOrderByExcelSheet(data);             
       Swal.fire({                 
         icon: "success",                 
@@ -86,18 +150,20 @@ export const UploadExcelSheet = ({ onUpload }) => {
     handleChange,        
     handleBlur,        
     setFieldValue,        
+    setValues,
     setFieldTouched,        
     values,        
     touched,        
     errors,    
   } = useFormik({         
     initialValues: {             
-      orderName: "",             
-      shippingPhone: "",             
+      firstName: "",
+      lastName: "",             
+      phoneNumber: "",             
       shippingAddress: shippingAddress,             
       city: "",             
       state: "",             
-      postalCode: "", 
+      pinCode: "", 
     }, 
     validationSchema: placeOrderSchema, 
     onSubmit: (values, actions) => { 
@@ -107,9 +173,10 @@ export const UploadExcelSheet = ({ onUpload }) => {
         orderStatus: "PENDING", 
         paymentStatus: "NOT PAID", 
         ...values, 
-        postalCode: values.postalCode.replace(/\s+/g, ""), 
+        pinCode: values.pinCode.replace(/\s+/g, ""), 
         products: excelData, 
       }; 
+
       placeOrder(data); 
       actions.resetForm(); 
       setLoading(false); 
@@ -117,7 +184,9 @@ export const UploadExcelSheet = ({ onUpload }) => {
   }); 
   
   const handleOnExport = () => { 
+    console.log(allProducts);
     const ws = XLSX.utils.json_to_sheet(allProducts); 
+    
     const wb = XLSX.utils.book_new(); 
     XLSX.utils.book_append_sheet(wb, ws, "Products"); 
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" }); 
@@ -144,9 +213,10 @@ export const UploadExcelSheet = ({ onUpload }) => {
 
             <Button
                                                 variant="success"
-                                                type="submit"
+                                               
                                                 disabled={loading}
                                                 className="me-2 mb-3" 
+                                                
                                                 >
                                                   
                                                   <Spinner
@@ -169,19 +239,23 @@ export const UploadExcelSheet = ({ onUpload }) => {
               <table className="table" id="table-to-xls">
                 <thead className="thead-dark">
                   <tr>
-                    <th>product_id</th>
-                    <th>brand</th>
-                    <th>category</th>
-                    <th>product_name</th>
+                    <th>Product Id</th>
+                    <th>Brand</th>
+                    <th>Category</th>
+                    <th>Product Name</th>
+                    <th>Unit Price</th>
+                    <th>Discounted Price</th>
                     </tr>
                     </thead>
                     <tbody> 
                       {Array.isArray(allProducts) && allProducts.map((product) => ( 
-                      <tr key={product.product_id}>
-                        <td>{product.product_id}</td>
+                      <tr key={product.productId}>
+                        <td>{product.productId}</td>
                         <td>{product.brand}</td>
                         <td>{product.category}</td>
-                        <td>{product.product_name}</td>
+                        <td>{product.productName}</td>
+                        <td>{product.unitPrice}</td>
+                        <td>{product.discountedPrice}</td>
                         </tr> 
                         ))} 
                         </tbody>
@@ -191,122 +265,167 @@ export const UploadExcelSheet = ({ onUpload }) => {
                         <Row key={23132} className="mb-3">
                           <Col xs={4} sm={3} md={2} lg={3} xl={2} className="d-flex align-items-center justify-content-center"></Col>
                           <Col lg={6}>
-                            <Form noValidate onSubmit={handleSubmit}>
-                              <Row>
-                                <Form.Group as={Col} md={6} controlId="orderName" className="mb-3">
-                                  <Form.Label>Order Name</Form.Label>
-                                  <Form.Control
-                                  type="text"
-                                  placeholder="Order Name"
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                  value={values.orderName}
-                                  isInvalid={touched.orderName && !!errors.orderName} 
-                                  />
-                                  
-                                  <Form.Control.Feedback type="invalid"> 
-                                  {errors.orderName} 
-                                  </Form.Control.Feedback>
-                                  </Form.Group>
-                                  <Form.Group as={Col} md={6} controlId="shippingPhone" className="mb-3">
-                                    <Form.Label>Shipping Phone</Form.Label>
-                                    <Form.Control
-                                    type="text"
-                                    placeholder="Shipping Phone"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={values.shippingPhone}
-                                    isInvalid={touched.shippingPhone && !!errors.shippingPhone} 
-                                    />
-                                    
-                                    <Form.Control.Feedback type="invalid"> 
-                                    {errors.shippingPhone} 
-                                    </Form.Control.Feedback>
-                                    </Form.Group>
-                                    </Row>
-                                    <Row>
-                                      <Form.Group as={Col} controlId="shippingAddress" className="mb-3">
-                                        <Form.Label>Shipping Address</Form.Label>
-                                        <Form.Control
-                                        type="text"
-                                        placeholder="Shipping Address"
-                                        autoComplete="address-line-1"
-                                        value={shippingAddress}
-                                        onChange={handleAddressInputChange}
-                                        onBlur={handleAddressInputBlur}
-                                        isInvalid={touched.shippingAddress && !!errors.shippingAddress} 
-                                        />
-                                        
-                                        <Form.Control.Feedback type="invalid"> 
-                                        {errors.shippingAddress} 
-                                        </Form.Control.Feedback>
-                                        </Form.Group>
-                                        </Row>
-                                        <Row>
-                                          <Form.Group as={Col} controlId="city" className="mb-3" md={4}>
-                                            <Form.Label>City</Form.Label>
-                                            <Form.Control
-                                            type="text"
-                                            placeholder="City"
-                                            autoComplete="address-level2"
-                                            onChange={handleChange}
-                                            onBlur={handleBlur}
-                                            value={values.city}isInvalid={touched.city && !!errors.city} 
-                                            />
-                                            
-                                            <Form.Control.Feedback type="invalid"> 
-                                            {errors.city} 
-                                            </Form.Control.Feedback>
-                                            </Form.Group>
-                                            <Form.Group as={Col} controlId="state" className="mb-3">
-                                              <Form.Label>State</Form.Label>
-                                              <Form.Control
-                                              type="text"
-                                              placeholder="State"
-                                              autoComplete="address-level1"
-                                              onChange={handleChange}
-                                              onBlur={handleBlur}
-                                              value={values.state}
-                                              isInvalid={touched.state && !!errors.state} 
-                                              />
-                                              <Form.Control.Feedback type="invalid"> 
-                                              {errors.state} 
-                                              </Form.Control.Feedback>
-                                              </Form.Group>
-                                              <Form.Group as={Col} controlId="postalCode" className="mb-3">
-                                                <Form.Label>Postal Code</Form.Label>
-                                                <Form.Control
-                                                type="text"
-                                                placeholder="Postal Code"
-                                                autoComplete="postal-code"
-                                                onChange={handleChange}
-                                                onBlur={handleBlur}
-                                                value={values.postalCode}isInvalid={touched.postalCode && !!errors.postalCode} 
-                                                />
-                                                <Form.Control.Feedback type="invalid"> 
-                                                {errors.postalCode} 
-                                                </Form.Control.Feedback>
-                                                </Form.Group>
-                                                </Row>
-                                                <Button
-                                                variant="primary"
-                                                type="submit"
-                                                disabled={loading}
-                                                className="me-2 mb-3" 
-                                                >
-                                                  
-                                                  <Spinner
-                                                  animation="border"
-                                                  as="span"
-                                                  size="sm"
-                                                  className="me-2"
-                                                  hidden={!loading} 
-                                                  ></Spinner>
-                                                  <span>Proceed Order</span>
-                                                  </Button>
-                                                  </Form>
+                          <Form noValidate onSubmit={handleSubmit}>
+          <Row>
+              <Form.Group
+                as={Col}
+                md={6}
+                controlId="firstName"
+                className="mb-3"
+              >
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="First Name"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.firstName}
+                  isInvalid={touched.firstName && !!errors.firstName}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.firstName}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group
+                as={Col}
+                md={6}
+                controlId="lastName"
+                className="mb-3"
+              >
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Last Name"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.lastName}
+                  isInvalid={touched.lastName && !!errors.lastName}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.lastName}
+                </Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group
+                as={Col}
+                md={6}
+                controlId="phoneNumber"
+                className="mb-3"
+              >
+                <Form.Label>Phone Number</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Phone Number"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.phoneNumber}
+                  isInvalid={touched.phoneNumber && !!errors.phoneNumber}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.phoneNumber}
+                </Form.Control.Feedback>
+              </Form.Group>
+            </Row>
+
+            {/* Adding mapbox address autofill */}
+            {/* <AddressAutofill
+            //  accessToken={process.env.REACT_APP_MAPBOX_TOKEN}
+              options={{
+                country: "CA",
+                language: "en",
+              }}
+            > */}
+              <Row>
+                <Form.Group
+                  as={Col}
+                  controlId="shippingAddress"
+                  className="mb-3"
+                >
+                  <Form.Label>Shipping Address</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Shipping Address"
+                    autoComplete="address-line-1"
+                    value={shippingAddress}
+                    onChange={handleAddressInputChange}
+                    onBlur={handleAddressInputBlur}
+                    isInvalid={
+                      touched.shippingAddress && !!errors.shippingAddress
+                    }
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.shippingAddress}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+              <Row>
+                <Form.Group as={Col} controlId="city" className="mb-3" md={4}>
+                  <Form.Label>City</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="City"
+                    autoComplete="address-level2"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.city}
+                    isInvalid={touched.city && !!errors.city}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.city}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} controlId="state" className="mb-3">
+                  <Form.Label>State</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="State"
+                    autoComplete="address-level1"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.state}
+                    isInvalid={touched.state && !!errors.state}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.state}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} controlId="pinCode" className="mb-3">
+                  <Form.Label>PinCode</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="PinCode"
+                    autoComplete="pinCode"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.pinCode}
+                    isInvalid={touched.pinCode && !!errors.pinCode}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.pinCode}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Row>
+            {/* </AddressAutofill> */}
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={loading}
+              className="me-2 mb-3"
+            >
+              <Spinner
+                animation="border"
+                as="span"
+                size="sm"
+                className="me-2"
+                // loading state for save button
+                hidden={!loading}
+              ></Spinner>
+              <span>Proceed Order</span>
+            </Button>
+          </Form>
                                                   </Col>
                                                   </Row>
                                                   </Container> 
-                                                  ); 
-                                                };
+    ); 
+};
