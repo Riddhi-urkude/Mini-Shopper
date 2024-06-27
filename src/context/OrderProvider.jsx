@@ -11,10 +11,10 @@ import {
     removeItemFromOrder,
     removeAllItemsFromOrder,
     getOrderById,
-  } from "../services/order.service";
+  } from "../Services/Order.Service";
 
 
-import { getProductById } from "../services/product.service";
+import { getProductById } from "../Services/Product.Service";
 
 
 
