@@ -1,7 +1,7 @@
 import { IKContext, IKImage } from "imagekitio-react";
 import React, { useContext } from "react";
 import { Button, Card, Col, Row } from "react-bootstrap";
-import { CartContext } from "../../context/CartContext";
+import { CartContext } from "../../Context/CartContext";
 import { toast } from "react-toastify";
 
 export const SingleCartItem = ({ item }) => {
@@ -20,27 +20,22 @@ export const SingleCartItem = ({ item }) => {
               xs={4} md={3} lg={2} xxl={1}
               className="d-flex align-items-center justify-content-center"
             >
-              {/* <IKContext
-                urlEndpoint={process.env.REACT_APP_IMAGE_KIT_URL}
-                publicKey={process.env.REACT_APP_IMAGE_KIT_PUBLIC_KEY}
-              >
-                <IKImage
-                  path={`/products/${item.product.productImage}`}
-                  transformation={[
-                    {
-                      height: 300,
-                      width: 300,
-                    },
-                  ]}
-                  width="100%"
-                  height="100%"
-                  style={{ objectFit: "cover", borderRadius: "50%" }}
-                />
-              </IKContext> */}
+        <img
+         src={'data:image/jpeg;base64,' +item.product.image} 
+         alt={item.productName}
+          width="80%"
+          height="80%"
+          style={{
+            objectFit: "cover",
+            cursor: "pointer",
+            borderRadius: "50%",
+          }}
+        />
+
             </Col>
             {/* Product Details */}
             <Col md={7} lg={8} xxl={9}>
-              <h6>{item.product.title}</h6>
+              <h6>{item.product.productName}</h6>
               <small>{item.product.shortDescription}</small>
               <Row>
                 <Col md={4}>
@@ -99,7 +94,7 @@ export const SingleCartItem = ({ item }) => {
                       <Button
                         size="sm"
                         onClick={(e) => {
-                          const newQuantity = item.quantity - 1;
+                          const newQuantity = item.quantity-1;
                           if (newQuantity > 0) {
                             const data = {
                               productId: item.product.productId,
@@ -122,7 +117,7 @@ export const SingleCartItem = ({ item }) => {
                       <Button
                         size="sm"
                         onClick={() => {
-                          const newQuantity = item.quantity + 1;
+                          const newQuantity =   item.quantity + 1;
                           if (newQuantity > 10) {
                             toast.info("Quantity can't be more than 10", {
                               position: "bottom-right",
