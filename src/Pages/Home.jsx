@@ -2,38 +2,11 @@ import React, {useState, useEffect} from "react";
 import Hero from "../Components/Hero";
 import axios from "axios";
 
+import { NavLink, useNavigate } from "react-router-dom";
+//import { getAllProducts } from "../services/product.service";
+
 export default function Home() {
   document.title = "MINI-SHOPPER | Your Trusted Destination";
-
-  const [selectedFiles, setSelectedFile] = useState(null);
-
-  const handleFileChange = (Event) => {
-    setSelectedFile(Event.target.files[0]);
-  };
-
-  const handleUpload = async () => {
-    if (!selectedFiles) {
-      alert('please select a file first!');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('image, selectedFile');
-
-    try{
-      const response = await axios.post('', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      console.log(response.data);
-      alert('File uploaded successfully!');
-    } catch (error) {
-      console.error('Error uploading the file:', error);
-      alert('Error uploading the file!');
-    }
-  };
 
   return (
     <Hero
@@ -43,10 +16,6 @@ export default function Home() {
       }
     >
 
-      <div>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        <button onClick={handleUpload}>Upload</button>
-      </div>
-    </Hero>
+   </Hero>
   );
 }
