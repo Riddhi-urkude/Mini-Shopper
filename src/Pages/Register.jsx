@@ -25,6 +25,8 @@ export const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   // Server side validation error
   const [serverError, setServerError] = useState(null);
+
+  const [isUserTypeSelected, setIsUserTypeSelected] = useState(false);
  
   // Loading state for register button
   const [loading, setLoading] = useState(false);
@@ -39,6 +41,7 @@ export const Register = () => {
         password: "",
         cpassword: "",
         userId: "",
+        userType: "",
       },
      
       validationSchema: registerSchema,
@@ -87,6 +90,11 @@ export const Register = () => {
       handleChange(e);
       if(e.target.id==='email'){
         setFieldValue('userId', e.target.value);
+      }
+
+      const handleUserTypeChange =(e)=>{
+        handleChange(e);
+        setIsUserTypeSelected(!!e.target.value);
       }
        
       };
@@ -166,6 +174,22 @@ export const Register = () => {
             <h3>Register</h3>
           </Col>
         </Row>
+         <Form.Group as={Col} controlId="userType">
+          <Form.Label>User Type</Form.Label>
+          <Form.Select
+            onChange={handleChange}
+            onBlur={handleBlur}
+            value={values.userType}
+            name="userType"
+          >
+            <option value="">Select User Type</option>
+            <option value="user">User</option>
+            <option value="shopkeeper">Shopkeeper</option>
+          </Form.Select>
+          <Form.Control.Feedback type="invalid">
+            {errors.userType}
+          </Form.Control.Feedback>
+        </Form.Group>
         <Form noValidate className="mt-2" onSubmit={handleSubmit}>
           <Row className="mb-3 justify-content-center" md={10}>
             <Form.Group as={Col} controlId="firstName">
