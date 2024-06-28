@@ -19,6 +19,9 @@ export const Login = () => {
   // Loading state for spinner
   const [loading, setLoading] = useState(false);
 
+  // state to track selected user type
+  const [selectedUserType, setSelectedUserType] = useState("normal");
+
   const navigate = useNavigate();
 
   // user context
@@ -30,6 +33,7 @@ export const Login = () => {
       initialValues: {
         userId: "",
         password: "",
+        role: "normal" // default role
       },
       validationSchema: loginSchema,
       onSubmit: (values, actions) => {
@@ -63,17 +67,15 @@ export const Login = () => {
          
 
           
-          //   // based on user role, redirect to dashboard or home page
-          //   // NORMAL USER -> home page
-          //   // ADMIN -> profile page
-          //   res.user.roles.forEach((role) => {
-          //     if (role.roleName === ROLES.NORMAL) {
-          //       navigate("/");
-          //     }
-          //     if (role.roleName === ROLES.ADMIN) {
-          //       navigate("/");
-          //     }
-          //   });
+             // based on user role, redirect to dashboard or home page
+             res.user.roles.forEach((role) => {
+               if (role.roleName === ROLES.NORMAL) {
+                 navigate("/");
+               }
+               if (role.roleName === ROLES.ADMIN) {
+                 navigate("/");
+               }
+             });
            })
           .catch((err) => {
             // unauthorised login error
@@ -122,6 +124,19 @@ export const Login = () => {
         </Col>
       </Row>
       {/* Login Form */}
+      <Form.Group controlId="role" className="mb-3">
+        <Form.Label>Select Role</Form.Label>
+        <Form.Select
+          value={values.role}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          name="role"
+        >
+          <option value="">Select Role</option>
+          <option value="user">Normal User</option>
+          <option value="shopkeeper">Shopkeeper</option>
+        </Form.Select>
+      </Form.Group>
       <Form noValidate className="mt-2" onSubmit={handleSubmit}>
         <Row className="mb-3">
           <Form.Group as={Col} controlId="userId">
