@@ -2,7 +2,7 @@ import React from "react";
 import { useContext } from "react";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import { CartContext } from "../../Context/CartContext";
-import { SingleCartItem } from "../../Components/users/SingleCartItem";
+import { SingleCartItem } from "../../Components/Users/SingleCartItem";
 import { NavLink } from "react-router-dom";
 
 //import { getProductsByCategoryId } from "../../services/product.service";
