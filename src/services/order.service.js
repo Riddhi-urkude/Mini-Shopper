@@ -47,12 +47,25 @@ export const getAllProductsForExcel = async () =>{
 }
 
 // update order
-export const updateOrder = async (order, orderId) => {
-//   const result = await privateAxios.put(
-//     `${API_ENDPOINTS.ORDERS}/${orderId}`,
-//     order
-//   );
-//   return result.data;
+export const updateOrder = async (values) => {
+  console.log(values);
+  // console.log(orderId);
+  // const data={
+  //   orderId : "03bea9ef-a789-475c-8751-03b75d2db7b7",
+  //   orderStatus : "SEND FOR MODIFICATION",
+  //   reason : "i won't tell you"
+  // }
+  try{
+    const result = await privateAxiosInstance.post(`/orders/changeOrderStatus`, values);
+    console.log(result);
+    
+    return result.data;
+
+  }catch(err){
+    console.log(err);
+  }
+
+  
 };
 
 
@@ -83,3 +96,16 @@ export const removeAllItemsFromOrder = async (userId) => {
   //return res.data;
   return "";
 };
+
+export const getAllOrders = async () => {
+  const result = await privateAxiosInstance.post(`/orders/getAllOrders`);
+  return result.data;
+
+}
+
+// export const updateOrderStatus = async (updatedOrder) => {
+//   const result = await privateAxiosInstance.post(`/orders/changeOrderStatus`, updatedOrder);
+// }
+
+
+
