@@ -18,7 +18,7 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
   const userContext =  useContext(UserContext);
   const { cart } = useContext(CartContext);
 
-
+//  console.log(userContext);
   const doLogout = () => {
     // remove user data and token from local storage and user context
     userContext.doLogout();
@@ -88,17 +88,23 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
               Contact Us
             </Nav.Link>
 
+
+            {userContext.isLogin && userContext.userData.role === 'shopkeeper' && (
+            <Nav.Link as={NavLink} to="/getAllOrders" onClick={toggleCollapse}>
+                 View Orders
+            </Nav.Link>
+             )}
+
            
 
           </Nav>
           <Nav>
-              {userContext.isLogin ? (
+              {userContext.isLogin  ? (
                 <>
-                  {/* <Nav.Link  as={NavLink} to="/UploadExcelSheet" onClick={toggleCollapse}>
-                        Upload-ExcelSheet
-                  </Nav.Link> */}
-                  <Nav.Link as={NavLink} to="/cart" onClick={toggleCollapse}>
-                    <i className="fa-solid fa-cart-shopping">Cart</i>
+                 {userContext.userData.role === "user" || userContext.userData.role === "normal user" ? (
+                    <>
+                      <Nav.Link as={NavLink} to="/cart" onClick={toggleCollapse}>
+                    <i className="fa-solid fa-cart-shopping"></i>
                     {cart && cart?.items.length === 0 ? (
                       ""
                     ) : (
@@ -110,6 +116,9 @@ const NavbarMenu = ({ handleShowCategorySidebar }) => {
                   <Nav.Link as={NavLink} to="/orders" onClick={toggleCollapse}>
                     Orders
                   </Nav.Link>
+                </>
+     
+                ) : null}
 
                  <Nav.Link
                     onClick={() => {
