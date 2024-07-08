@@ -17,7 +17,7 @@ import { profileSchema } from "../../utils/schema/ProfileSchema";
 import { useEffect } from "react";
 import { getUserById, updateUser } from "../../Services/User.Service";
 import { toast } from "react-toastify";
-import { ImageUpload } from "../../Components/users/ImageUpload";
+import { ImageUpload } from "../../Components/Users/ImageUpload";
 
 
 
@@ -187,11 +187,10 @@ const Profile = () => {
           <Col>
             <h2 className="mt-3">
               <i
-                  className="fa fa-bars"
-//                className="fa-solid fa-bars me-2"
+                className="fa-solid fa-bars me-2"
                 style={{ cursor: "pointer" }}
                 onClick={handleShow}
-              >Profile</i>
+              ></i>
 
             </h2>
             <h3>
