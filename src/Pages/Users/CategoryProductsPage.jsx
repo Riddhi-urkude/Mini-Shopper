@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { Col, Container, Row, Spinner } from "react-bootstrap";
 import { getProductsByCategoryId } from "../../Services/Product.Service";
-import { ProductCard } from "../../Components/users/ProductCard";
+import { ProductCard } from "../../Components/Users/ProductCard";
 //import InfiniteScroll from "react-infinite-scroll-component";
 import { Loader } from "../../Components/Loader";
 
@@ -113,6 +113,7 @@ export const CategoryProductsPage = () => {
               </Row>
             </Container> */}
           {/* )} */}
+          
           {products &&
             (products.data.length === 0 ? (
               // if no products found
