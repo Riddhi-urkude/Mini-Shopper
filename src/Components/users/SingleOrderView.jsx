@@ -44,8 +44,8 @@ export const SingleOrderView = ({ order }) => {
                         // ]}
                         // width="100%"
                         // height="undefined"
-                        width="130%"
-                        height="130%"
+                        width="100%"
+                        height="100%"
                        // style={{width: "undefined", height: "undefined", flex: "1", objectFit: "cover", borderRadius: "50%" }}
                       />
                     {/* </IKContext> */}
