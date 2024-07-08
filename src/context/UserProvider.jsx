@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { UserContext } from "./UserContext";
 import { useState } from "react";
-import { doLoginLocalStorage, doLogoutLocalStorage, getUserFromLocalStorage, isLoggedIn } from "../auth/HelperAuth";
+import { doLoginLocalStorage, doLogoutLocalStorage, getUserFromLocalStorage, isLoggedIn } from "../Auth/HelperAuth";
 
 const UserProvider = ({ children }) => {
   const [isLogin, setIsLogin] = useState(false);
