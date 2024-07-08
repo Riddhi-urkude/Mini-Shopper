@@ -21,7 +21,7 @@ export const OrderCheckout = () => {
   const { userData } = useContext(UserContext);
   const { cart, setCart } = useContext(CartContext);
   const navigate = useNavigate();
-  console.log(userData);
+  //console.log(userData);
 
 
   const userContext = useContext(UserContext);
@@ -82,8 +82,7 @@ export const OrderCheckout = () => {
           city: res.city == null ? "":res.city,
           state: res.state == null ? "":res.state,
           pinCode: res.pinCode == null ? "":res.pinCode,
-         
-         
+          orderName: "",
         });
  
         res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
@@ -130,6 +129,7 @@ export const OrderCheckout = () => {
     errors,
   } = useFormik({
     initialValues: {
+      orderName: "",
       firstName: "",
       lastName: "",
       phoneNumber: "",
@@ -144,7 +144,7 @@ export const OrderCheckout = () => {
       setLoading(true);
 
       const data = {
-        userId: userData.userId,
+         userId: userData.userId,
         cartId: cart.cartId,
         orderStatus: "PENDING",
         paymentStatus: "NOT PAID",
@@ -254,6 +254,25 @@ export const OrderCheckout = () => {
         <Col lg={6}>
           <Form noValidate onSubmit={handleSubmit}>
           <Row>
+               <Form.Group
+                as={Col}
+                md={6}
+                controlId="orderName"
+                className="mb-3"
+              >
+                <Form.Label>Order Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Order Name"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.orderName}
+                  isInvalid={touched.orderName && !!errors.orderName}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.orderName}
+                </Form.Control.Feedback>
+              </Form.Group>
               <Form.Group
                 as={Col}
                 md={6}
