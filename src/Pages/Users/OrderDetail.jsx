@@ -10,6 +10,13 @@ import {Button, Card, Col, Container, Row } from "react-bootstrap";
 //import { IKContext, IKImage } from "imagekitio-react";
 import { Loader } from "../../Components/Loader";
 
+
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+
+
+
+
 export const OrderDetail = () => {
   document.title = "MINI-SHOPPER | View Order Details";
 
@@ -51,6 +58,107 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
   useEffect(() => {
     fetchOrder(orderId);
   }, [orderId, updateOrderItem, removeItem]);
+
+
+  const generatePDF = () => {
+    const doc = new jsPDF();
+ 
+    // Add text to the PDF with proper formatting and checks
+    const addText = (text, x, y, options = {}) => {
+      if (typeof text === 'string' && typeof x === 'number' && typeof y === 'number') {
+        doc.text(text, x, y, options);
+      }
+    };
+ 
+    // Draw horizontal line
+    const drawLine = (y) => {
+      doc.line(10, y, 200, y);
+    };
+ 
+    let currentY = 10;
+ 
+    // Set up the header
+    addText("Invoice", 105, 10, { align: 'center' });
+    currentY += 10;
+    addText("MINI-SHOPPER", 105, 20, { align: 'center' });
+    currentY += 10;
+    addText("www.mini-shopper.com", 105, 30, { align: 'center' });
+ 
+    // Add horizontal line
+    currentY += 10;
+    drawLine(currentY);
+ 
+    // Order Details
+    currentY += 10;
+    addText("Order Details", 10, currentY);
+    currentY += 5;
+    doc.autoTable({
+      startY: currentY,
+      head: [['Order Number', 'Order Date', 'Order Status', 'Payment Status']],
+      body: [[order.orderNumber, order.createdAt, order.orderStatus, order.paymentStatus]],
+      theme: 'plain',
+      styles: { fillColor: [255, 255, 255], textColor: [0, 0, 0]}
+    });
+ 
+    currentY = doc.autoTable.previous.finalY + 5;
+    drawLine(currentY);
+ 
+    // Billing Details
+    currentY += 10;
+    addText("Billing Details", 10, currentY);
+    currentY += 5;
+    doc.autoTable({
+      startY: currentY,
+      head: [['Name', 'Email', 'Home Address']],
+      body: [[`${order.user.firstName} ${order.user.lastName}`, order.user.email, `${order.user.address}, ${order.user.city}, ${order.user.state}, ${order.user.pinCode}`]],
+      theme: 'plain',
+      styles: { fillColor: [255, 255, 255], textColor: [0, 0, 0]}
+    });
+ 
+    currentY = doc.autoTable.previous.finalY + 5;
+    drawLine(currentY);
+ 
+    // Shipping Details
+    currentY += 10;
+    addText("Shipping Details", 10, currentY);
+    currentY += 5;
+    doc.autoTable({
+      startY: currentY,
+      head: [['Name', 'Phone Number', 'Address']],
+      body: [[`${order.firstName} ${order.lastName}`,`${order.phoneNumber}` , `${order.shippingAddress}, ${order.city}, ${order.state}, ${order.pinCode}`]],
+      theme: 'plain',
+      styles: { fillColor: [255, 255, 255], textColor: [0, 0, 0]}
+    });
+ 
+    currentY = doc.autoTable.previous.finalY + 5;
+    drawLine(currentY);
+ 
+    // Order Items
+    currentY += 10;
+    addText("Order Items", 10, currentY);
+    currentY += 5;
+    const orderItems = order.orderItems.map(item => [
+      item.product.productName,
+      item.quantity,
+      `₹ ${item.totalPrice.toFixed(2)}`
+    ]);
+ 
+    doc.autoTable({
+      startY: currentY,
+      head: [['Product Name', 'Quantity', 'Total Price in (₹)']],
+      body: orderItems,
+      theme: 'grid'
+    });
+ 
+    currentY = doc.autoTable.previous.finalY + 5;
+    drawLine(currentY);
+ 
+    // Total Amount
+    currentY += 10;
+    addText(`Total Order Amount: ₹ ${order.orderAmount.toFixed(2)}`, 10, currentY);
+ 
+    doc.save("receipt.pdf");
+  };
 
   return (
     <Container className="mt-3">
@@ -103,7 +211,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                       <Row>
                         <Col>
                           <p className="m-0">
-                            {order.user.fname} {order.user.lname}
+                            {order.user.firstName} {order.user.lastName}
                           </p>
                         </Col>
                         <Col>
@@ -209,9 +317,9 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                   <Row key={index} className="mb-3">
                     
                     <Col
-                      xs={4}
-                      sm={3}
-                      xl={2}
+                      // xs={4}
+                      // sm={3}
+                      // xl={2}
                       className="d-flex align-items-center justify-content-center"
                     >
                        {/* <IKContext
@@ -228,13 +336,15 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                         // ]}
                         // width="100%"
                         // height="undefined"
-                        style={{width: "100%", height: "100%", aspectRatio: "1", objectFit: "cover", borderRadius: "50%" }}
+                        style={{width: "70%", aspectRatio: "1", objectFit: "cover", borderRadius: "50%" }}
                         // style={{ flex: "1", objectFit: "cover", borderRadius: "50%" }}
                       />
                        {/* </IKContext>  */}
                     </Col>
                     {/* Product Details */}
-                    <Col xs={8} sm={6} md={12} lg={9}>
+                    <Col 
+                    // xs={8} sm={6} md={12} lg={9}
+                    >
                       <Row>
                         <Col>
                           <h6
@@ -248,10 +358,14 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                         </Col>
                       </Row>
                       <Row>
-                        <Col md={6}>
+                        <Col
+                         md={6}
+                        >
                           <small>Quantity: {item.quantity} </small>
                         </Col>
-                        <Col md={6}>
+                        <Col 
+                        md={6}
+                        >
                           <small>
                             Total Price: ₹ {item.totalPrice.toFixed(2)}
                           </small>
@@ -259,9 +373,9 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                       </Row>
                     </Col>
                     {/* Buttons */}
-                    {order.orderStatus==="hcjv" ? 
+                    {order.orderStatus === "PENDING" && order.orderItems.length > 1 ? 
             <Col
-              xs={7} sm={4} md={2} lg={2}
+              // xs={7} sm={4} md={2} lg={2}
               className="d-flex align-items-center justify-content-center"
             >
               <div className="w-100">
@@ -300,7 +414,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                           }
                         }}
                       >
-                        <i className="fa-solid fa-minus"> - </i>
+                        <i className="fa-solid fa-minus"> </i>
                       </Button>
                     </Col>
                     <Col className="d-grid">
@@ -325,7 +439,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                           }
                         }}
                       >
-                        <i className="fa-solid fa-plus"> + </i>
+                        <i className="fa-solid fa-plus"> </i>
                       </Button>
                     </Col>
                   </Row>
@@ -340,6 +454,17 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                 <Col>
                   <hr />
                   <h4>Total Order Amount: ₹ {order.orderAmount.toFixed(2)}</h4>
+
+                  {order.orderStatus == "FULFILL" ? 
+                  (
+                       <Button onClick={generatePDF} variant="primary">
+                       Download Receipt
+                     </Button>
+                  ) : (
+                    ""
+                  ) 
+                  }
+
                 </Col>
               </Row>
             </Col>
