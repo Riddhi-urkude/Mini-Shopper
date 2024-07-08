@@ -5,7 +5,7 @@ import { UserContext } from "../../Context/UserContext";
 import { getAllOrdersByUserId } from "../../Services/Order.Service";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { SingleOrderView } from "../../Components/users/SingleOrderView";
+import { SingleOrderView } from "../../Components/Users/SingleOrderView";
 import { Loader } from "../../Components/Loader";
 
 export const Orders = () => {
