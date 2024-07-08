@@ -8,24 +8,27 @@ import { useState } from "react";
 import Contact from "./Pages/Contact";
 
 import { CategorySideBar } from "./Components/CategorySideBar";
-import {CategoryProductsPage} from "./Pages/users/CategoryProductsPage";
+import {CategoryProductsPage} from "./Pages/Users/CategoryProductsPage";
 
 import UserProvider from "./Context/UserProvider";
 import { CategoryProvider } from "./Context/CategoryProvider";
-import {Products} from "./Pages/users/Products";
-import {SingleProductPage} from "./Pages/users/SingleProductPage";
+import {Products} from "./Pages/Users/Products";
+import {SingleProductPage} from "./Pages/Users/SingleProductPage";
 
-import Profile from "./Pages/users/Profile";
-import { ShoppingCart } from "./Pages/users/ShoppingCart";
+import Profile from "./Pages/Users/Profile";
+import { ShoppingCart } from "./Pages/Users/ShoppingCart";
 import { CartProvider } from "./Context/CartProvider";
 import {OrderProvider } from "./Context/OrderProvider";
-import {OrderCheckout} from "./Pages/users/OrderCheckout";
-import { Orders } from "./Pages/users/Orders";
-import { OrderDetail } from "./Pages/users/OrderDetail";
-import {SingleProductCheckOut} from "./Pages/users/SingleProductCheckOut";
-import {UploadExcelSheet} from "./Pages/users/UploadExcelSheet";
+import {OrderCheckout} from "./Pages/Users/OrderCheckout";
+import { Orders } from "./Pages/Users/Orders";
+import { OrderDetail } from "./Pages/Users/OrderDetail";
+import {SingleProductCheckOut} from "./Pages/Users/SingleProductCheckOut";
+import {UploadExcelSheet} from "./Pages/Users/UploadExcelSheet";
 
-import PrivateRoutes from "./Components/auth/PrivateRoutes";
+import PrivateRoutes from "./Components/Auth/PrivateRoutes";
+
+
+import { ViewOrders } from "./Pages/Shopkeeper/ViewOrders";
 
 const App = () => {
   // state for category sidebar
@@ -83,6 +86,7 @@ const App = () => {
                <Route path="/UploadExcelSheet" element={<UploadExcelSheet />}></Route>
                <Route path="/orders" element={<Orders />}></Route>
                <Route path="/order/:orderId" element={<OrderDetail />}></Route>
+               <Route path="/getAllOrders" element={<ViewOrders />}></Route>
                </Route> 
               {/* Routes only admin and logged in user can access*/}
                {/* <Route
