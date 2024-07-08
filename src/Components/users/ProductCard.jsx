@@ -10,6 +10,13 @@ export const ProductCard = ({ product }) => {
   const { addItem } = useContext(CartContext);
   const { isLogin } = useContext(UserContext);
 
+  const {cart} = useContext(CartContext);
+  let cartProducts = '';
+  if(cart!=null){
+     cartProducts = cart.items.map((item)=>{
+      return item.product.productId; 
+    });
+  }
 
    const handleAddToCart = (productId, quantity = 1) => {
     if (isLogin) {
@@ -81,7 +88,29 @@ export const ProductCard = ({ product }) => {
               </div>
             )}
           </div>
-          <Button
+          {cartProducts.includes(product.productId) ?(
+            <Button
+              variant="primary"
+              size="sm"
+              disabled={true}
+            >
+              Already Available in Cart
+            </Button>
+          
+             ) :( 
+             <Button
+                variant="primary"
+                size="sm"
+                disabled={!product.stock}
+                onClick={() => {
+                  handleAddToCart(product.productId);
+                }}
+             >
+                Add to Cart
+             </Button>
+           
+           )}
+          {/* <Button
             variant="primary"
             size="sm"
             disabled={!product.stock}
@@ -91,6 +120,7 @@ export const ProductCard = ({ product }) => {
           >
             Add to Cart
           </Button>
+           */}
         </Card.Body>
       </Card>
     </Col>
