@@ -4,6 +4,7 @@ import { publicAxiosInstance, privateAxiosInstance } from "./Axios.Service";
 
 export const registerUser= async (data)=> {
       data.userId=data.email;
+      data.role=data.userType;
       //data.firstName=null;
     //  data.lastName=data.lname;
     // data.password="Kishore@123";
@@ -17,7 +18,14 @@ export const registerUser= async (data)=> {
 
     //  }
  
-  }
+}
+
+export const registerShopkeeper= async (data)=> {
+  data.userId=data.email;
+  data.role=data.userType;
+  console.log(data);
+    return await publicAxiosInstance.post("/users/newUser", data);
+}
 
 
 export const loginUser= async(data)=>{
@@ -52,6 +60,13 @@ export const loginUser= async(data)=>{
     // }
   }
 
+
+export const loginShopkeeper = async(data)=>{
+  console.log(data);
+  const result = await publicAxiosInstance.post(`/users/loginUser`, data);
+  return result;
+}
+  
 
 export const getUserById= async (userId) => {
 
