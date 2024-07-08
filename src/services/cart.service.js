@@ -7,11 +7,13 @@ export const getCartByUserId = async (userId) => {
    // const res = await axios.get(`http://localhost:8080/carts/user/${userId}`);
    // console.log("in cart service");
    // console.log(res);
-
+  try{
    const res = await publicAxiosInstance.get(`/carts/user/${userId}`);
    //console.log(res.data);
     return res.data;
-  
+  }catch(err){   
+     
+  }
  //  return cart;
 };
   
