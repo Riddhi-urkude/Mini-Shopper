@@ -110,7 +110,7 @@ export const UploadExcelSheet = ({ onUpload }) => {
           city: res.city == null ? "":res.city,
           state: res.state == null ? "":res.state,
           pinCode: res.pinCode == null ? "":res.pinCode,
-         
+          orderName: "",
          
         });
  
@@ -156,14 +156,15 @@ export const UploadExcelSheet = ({ onUpload }) => {
     touched,        
     errors,    
   } = useFormik({         
-    initialValues: {             
+    initialValues: {       
+      orderName: "",      
       firstName: "",
       lastName: "",             
       phoneNumber: "",             
       shippingAddress: shippingAddress,             
       city: "",             
       state: "",             
-      pinCode: "", 
+      pinCode: "",
     }, 
     validationSchema: placeOrderSchema, 
     onSubmit: (values, actions) => { 
@@ -261,12 +262,32 @@ export const UploadExcelSheet = ({ onUpload }) => {
                         </tbody>
                         </table>
                         </Col>
-                        </Row>
+              </Row>
                         <Row key={23132} className="mb-3">
                           <Col xs={4} sm={3} md={2} lg={3} xl={2} className="d-flex align-items-center justify-content-center"></Col>
                           <Col lg={6}>
                           <Form noValidate onSubmit={handleSubmit}>
+                            
           <Row>
+              <Form.Group
+                as={Col}
+                md={6}
+                controlId="orderName"
+                className="mb-3"
+              >
+                <Form.Label>Order Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Order Name"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.orderName}
+                  isInvalid={touched.orderName && !!errors.orderName}
+                />
+                <Form.Control.Feedback type="invalid">
+                  {errors.orderName}
+                </Form.Control.Feedback>
+              </Form.Group>
               <Form.Group
                 as={Col}
                 md={6}
