@@ -109,7 +109,7 @@ export const SingleCartItem = ({ item }) => {
                           }
                         }}
                       >
-                        <i className="fa-solid fa-minus"> - </i>
+                        <i className="fa-solid fa-minus"></i>
                       </Button>
                     </Col>
                     <Col className="d-grid">
@@ -132,7 +132,7 @@ export const SingleCartItem = ({ item }) => {
                           }
                         }}
                       >
-                        <i className="fa-solid fa-plus"> + </i>
+                        <i className="fa-solid fa-plus"></i>
                       </Button>
                     </Col>
                   </Row>
