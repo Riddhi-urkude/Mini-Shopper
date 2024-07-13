@@ -60,19 +60,21 @@ export const Register = () => {
         firstName: "",
         lastName: "",
         email: "",
+        phoneNumber: "",
         password: "",
         cpassword: "",
         userId: "",
         userType: "",
         address: "",
         city: "",
+        street: "",
         state: "",
         pinCode: "",
       },
      
       validationSchema: registerSchema,
       onSubmit: (values, actions) => {
-        const { address, city, state, pinCode, ...otherValues } = values;
+        const { address, city, street state, pinCode, ...otherValues } = values;
         // Transform the data as an array of obj
         const transformedData = {
           ...otherValues,
@@ -82,6 +84,7 @@ export const Register = () => {
             address: values.address,
             city: values.city,
             state: values.state,
+            street: values.street,
             pinCode: values.pinCode
           }]
         };
@@ -380,6 +383,26 @@ export const Register = () => {
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.city}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group
+                      as={Col}
+                      controlId="street"
+                      md={4}
+                      className="mb-3"
+                    >
+                      <Form.Label>Street</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Street"
+                        autoComplete="address-level2"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.street}
+                        isInvalid={touched.street && !!errors.street}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.street}
                       </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group
