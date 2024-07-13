@@ -34,6 +34,24 @@ export const Register = () => {
  
   // Loading state for register button
   const [loading, setLoading] = useState(false);
+
+  // state for address
+  const [address, setAddress] = useState("")
+
+  // methods for handling address changes
+  const handleAddressInputChange = (event) => {
+    const inputValue = event.target.value;
+    setAddress(inputValue);
+    setFieldValue("address", inputValue);
+  };
+ 
+  // handle address input blur
+  const handleAddressInputBlur = (event) => {
+    const inputValue = event.target.value;
+    setAddress(inputValue);
+    setFieldTouched("address", true);
+    setFieldValue("address", inputValue);
+  };
  
   const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue } =
    
@@ -46,10 +64,28 @@ export const Register = () => {
         cpassword: "",
         userId: "",
         userType: "",
+        address: "",
+        city: "",
+        state: "",
+        pinCode: "",
       },
      
       validationSchema: registerSchema,
       onSubmit: (values, actions) => {
+        const { address, city, state, pinCode, ...otherValues } = values;
+        // Transform the data as an array of obj
+        const transformedData = {
+          ...otherValues,
+          userId: values.email,
+          role: values.userType,
+          address: [{
+            address: values.address,
+            city: values.city,
+            state: values.state,
+            pinCode: values.pinCode
+          }]
+        };
+        
         //set loading to true for spinner
         console.log("printing in register "+values.userType);
         // let api;
@@ -59,7 +95,7 @@ export const Register = () => {
         //    api = registerShopkeeper(values);
         // }
        // setLoading(true);
-       registerUser(values)
+       registerUser(transformedData)
           .then((res) => {
             console.log(res);
             if(res.status===201){
@@ -106,30 +142,6 @@ export const Register = () => {
       }
        
       };
-      // const registerNewUser=(event)=> {
-      //    event.preventDefault();
-      //    //  console.log(firstName+" "+lastName+" "+email+" "+password+" "+city+" "+state+" "+pincode);
-      //    //console.log(event);
-      //    const data = { firstName: "fi", lastName: "la", email: "emmp@gmail.com", password:"pass", userId: "emmp@gmail.com" };
-      //    //console.log("user "+data);
-      //   // data.userId=data.email;
-      //    // data.firstName=data.fname;
-      //    // data.lastName=data.lname;
-      //    // data.password="Kishore@123";
-      //    try {
-      //       axios.post("http://localhost:8080/users/newUser", data).then((res) => {
-      //        console.log("response in register jsx " + res.data);
- 
-      //        navigate("/login");
-      //        //return res;
-      //      });
-      //    } catch (err) {
-      //      alert(err);
-      //    }
-     
-      //  }
-   
- 
  
   return (
     <>
@@ -247,60 +259,25 @@ export const Register = () => {
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
-          {/* <InputGroup className="mb-3">
-   <Form.Control
-type={showPassword ? "text" : "password"}     
-placeholder="Password"
-autoComplete="on"
-onChange={handleChange}
-onBlur={handleBlur}
-value={values.password}
-isInvalid={touched.password && !!errors.password} 
-/>
-<Button
-variant="outline-secondary"
-onClick={() => setShowPassword(!showPassword)}
-   >
-     {showPassword ? "Hide" : "Show"}
-   </Button>
-<Form.Control.Feedback type="invalid">
-    {errors.password}
-  </Form.Control.Feedback>
-</InputGroup> */}
-          {/* <Row className="mb-3">
-            <Form.Group as={Col} controlId="password">
-              <Form.Label>Password</Form.Label>
+
+          <Row className="mb-3">
+            <Form.Group as={Col} controlId="phoneNumber">
+              <Form.Label>Phone Number</Form.Label>
               <Form.Control
-                type="password"
-                placeholder="Password"
+                type="text"
+                placeholder="Phone Number"
                 autoComplete="on"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.password}
-                isInvalid={touched.password && errors.password}
+                value={values.phoneNumber}
+                isInvalid={touched.phoneNumber && errors.phoneNumber}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.password}
+                {errors.phoneNumber}
               </Form.Control.Feedback>
             </Form.Group>
           </Row>
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="cpassword">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirm Password"
-                autoComplete="on"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.cpassword}
-                isInvalid={touched.cpassword && !!errors.cpassword}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.cpassword}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Row> */}
+         
           <Row className="mb-3">
             <Form.Group as={Col} controlId="password">
               <Form.Label>Password</Form.Label>
@@ -361,6 +338,92 @@ onClick={() => setShowPassword(!showPassword)}
               </div>
             </Form.Group>
           </Row>
+ 
+          <Row>
+              <Form.Group
+                as={Col}
+                controlId="address"
+                md={12}
+                className="mb-3"
+              >
+              <Form.Label>Address</Form.Label>
+                <Form.Control
+                        type="text"
+                        placeholder="Address"
+                        autoComplete="address-line-1"
+                        value={address}
+                        onChange={handleAddressInputChange}
+                        onBlur={handleAddressInputBlur}
+                        isInvalid={touched.address && !!errors.address}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.address}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Row>
+                  <Row>
+                    <Form.Group
+                      as={Col}
+                      controlId="city"
+                      md={4}
+                      className="mb-3"
+                    >
+                      <Form.Label>City</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="City"
+                        autoComplete="address-level2"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.city}
+                        isInvalid={touched.city && !!errors.city}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.city}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group
+                      as={Col}
+                      controlId="state"
+                      md={4}
+                      className="mb-3"
+                    >
+                      <Form.Label>State</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="state"
+                        autoComplete="address-level1"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.state}
+                        isInvalid={touched.state && !!errors.state}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.state}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group
+                      as={Col}
+                      controlId="pinCode"
+                      md={4}
+                      className="mb-3"
+                    >
+                      <Form.Label>PinCode</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="PinCode"
+                        autoComplete="pincode"
+                        value={values.pinCode}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        isInvalid={touched.pinCode && !!errors.pinCode}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.pinCode}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                  </Row>
+ 
           {/* Register Button */}
           {/* Disable button while loading and show spinner as well */}
           <Button variant="primary" type="submit" disabled={loading} >
@@ -385,4 +448,3 @@ onClick={() => setShowPassword(!showPassword)}
     </>
   );
 };
- 
