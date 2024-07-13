@@ -68,7 +68,15 @@ export const UploadExcelSheet = ({ onUpload }) => {
     };    
   };     
   const handleFileSubmit = async (e) => {         
-    e.preventDefault();     
+    e.preventDefault();
+    if (excelData.length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: "Please select a file to upload",
+        timer: 2000,
+      });
+      return;
+    }
   };     
   
   const handleAddressInputChange = (event) => {         
@@ -98,23 +106,23 @@ export const UploadExcelSheet = ({ onUpload }) => {
       const userId = userContext.userData.userId;
  
       getUserById(userId)
-      .then((res) => {
-        console.log(res);
-        setUser(res);
+      .then((userRes) => {
+        console.log(userRes);
+        setUser(userRes);
  
         setValues({
-          firstName: res.firstName,
-          lastName: res.lastName,
-          phoneNumber: res.phoneNumber,
-          shippingAddress: res.address+", "+res.street == null ? "":res.address+", "+res.street,
-          city: res.city == null ? "":res.city,
-          state: res.state == null ? "":res.state,
-          pinCode: res.pinCode == null ? "":res.pinCode,
+          firstName: userRes.firstName,
+          lastName: userRes.lastName,
+          phoneNumber: userRes.phoneNumber,
+          shippingAddress: userRes.shippingAddress,
+          city: userRes.city,
+          state: userRes.state,
+          pinCode: userRes.pinCode,
           orderName: "",
          
         });
  
-        res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
+        //res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
       });
     }
   };
@@ -217,7 +225,7 @@ export const UploadExcelSheet = ({ onUpload }) => {
                                                
                                                 disabled={loading}
                                                 className="me-2 mb-3" 
-                                                
+                                                onClick={handleFileSubmit}
                                                 >
                                                   
                                                   <Spinner
