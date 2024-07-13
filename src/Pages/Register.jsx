@@ -70,11 +70,12 @@ export const Register = () => {
         street: "",
         state: "",
         pinCode: "",
+        addressType: "",
       },
      
       validationSchema: registerSchema,
       onSubmit: (values, actions) => {
-        const { address, city, street state, pinCode, ...otherValues } = values;
+        const { address, city, street state, pinCode, addressType, ...otherValues } = values;
         // Transform the data as an array of obj
         const transformedData = {
           ...otherValues,
@@ -85,7 +86,8 @@ export const Register = () => {
             city: values.city,
             state: values.state,
             street: values.street,
-            pinCode: values.pinCode
+            pinCode: values.pinCode,
+            addressType: values.addressType
           }]
         };
         
@@ -425,10 +427,11 @@ export const Register = () => {
                         {errors.state}
                       </Form.Control.Feedback>
                     </Form.Group>
+                    <Row className="mb-3">
                     <Form.Group
                       as={Col}
                       controlId="pinCode"
-                      md={4}
+                      md={6}
                       className="mb-3"
                     >
                       <Form.Label>PinCode</Form.Label>
@@ -445,6 +448,28 @@ export const Register = () => {
                         {errors.pinCode}
                       </Form.Control.Feedback>
                     </Form.Group>
+
+                    <Form.Group
+                      as={Col}
+                      controlId="addressType"
+                      md={6}
+                      className="mb-3"
+                    >
+                      <Form.Label>Address Type</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Ex: Home, Office, etc"
+                        autoComplete="addressType"
+                        value={values.addressType}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        isInvalid={touched.addressType && !!errors.addressType}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.addressType}
+                      </Form.Control.Feedback>
+                    </Form.Group>
+                    </Row>
                   </Row>
  
           {/* Register Button */}
