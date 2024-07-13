@@ -414,7 +414,7 @@ export const Register = () => {
                       <Form.Label>State</Form.Label>
                       <Form.Control
                         type="text"
-                        placeholder="state"
+                        placeholder="State"
                         autoComplete="address-level1"
                         onChange={handleChange}
                         onBlur={handleBlur}
