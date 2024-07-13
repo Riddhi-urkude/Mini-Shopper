@@ -2,7 +2,6 @@ import React, {useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import { useFormik } from "formik";
-import { AddressAutofill } from "@mapbox/search-js-react";
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { CartContext } from "../../Context/CartContext";
@@ -26,7 +25,7 @@ export const OrderCheckout = () => {
 
   const userContext = useContext(UserContext);
   const [user, setUser] = useState(false);
-
+  const [addresses, setAddresses] = useState([]);
 
 
 
@@ -69,31 +68,31 @@ export const OrderCheckout = () => {
     if(userContext.userData) {
       const userId = userContext.userData.userId;
  
-      getUserById(userId)
-      .then((res) => {
-        console.log(res);
-        setUser(res);
+      Promise.all([getUserById(userId)])
+      .then((userRes) => {
+        console.log(userRes);
+        setUser(userRes);
+        setAddresses(userRes.address);
  
         setValues({
-          firstName: res.firstName,
-          lastName: res.lastName,
-          phoneNumber: res.phoneNumber,
-          shippingAddress: res.address+", "+res.street == null ? "":res.address+", "+res.street,
-          city: res.city == null ? "":res.city,
-          state: res.state == null ? "":res.state,
-          pinCode: res.pinCode == null ? "":res.pinCode,
+          firstName: userRes.firstName,
+          lastName: userRes.lastName,
+          phoneNumber: userRes.phoneNumber,
+          shippingAddress: "",
+          city: "",
+          street: "",
+          state: "",
+          pinCode: "",
           orderName: "",
         });
  
-        res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
+        //res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
+      })
+      .catch((error) => {
+        console.error("Error fetching user or addresses", error);
       });
     }
   };
-
-
-
-
-
 
   const placeOrder = async (data) => {
     try {
@@ -117,6 +116,17 @@ export const OrderCheckout = () => {
     }
   };
 
+   const handleSaveAddressSelect = (address) => {
+    setShippingAddress(`${address.address}`);
+    setValues({
+      ...values,
+      shippingAddress: `${address.address}`,
+      city: address.city,
+      state: address.state,
+      pinCode: address.pinCode,
+    });
+  };
+
   const {
     handleSubmit,
     handleChange,
@@ -136,6 +146,7 @@ export const OrderCheckout = () => {
       //address: "",
       shippingAddress: shippingAddress,
       city: "",
+      street: "",
       state: "",
       pinCode: "",
     },
@@ -157,6 +168,8 @@ export const OrderCheckout = () => {
       setLoading(false);
     },
   });
+
+   console.log("Addresses state inside render:", addresses);
 
   return (
     <Container className="mt-3">
@@ -253,6 +266,32 @@ export const OrderCheckout = () => {
         </Col>
         <Col lg={6}>
           <Form noValidate onSubmit={handleSubmit}>
+
+            <Row>
+            <Form.Group controlId="savedAddresses" className="mb-3">
+              <Form.Label>
+                <h3>Select a delivery Address</h3>
+              </Form.Label>
+              <div>
+                {Array.isArray(addresses) && addresses.length > 0 ? (
+                  addresses.map((address, index) => (
+                  <Form.Check
+                    type="radio"
+                    key={index}
+                    name="savedAddress"
+                    label={`${address.address}, ${address.city}, ${address.state}, ${address.pinCode}`}
+                    value={index}
+                    onChange={() => handleSaveAddressSelect(address)}
+                  />
+                ))
+                ) : (
+                  <p>No saved addresses found</p>
+                )}
+              </div>
+            </Form.Group>
+            </Row>
+
+            <hr />
           <Row>
                <Form.Group
                 as={Col}
@@ -333,15 +372,6 @@ export const OrderCheckout = () => {
                 </Form.Control.Feedback>
               </Form.Group>
             </Row>
-
-            {/* Adding mapbox address autofill */}
-            {/* <AddressAutofill
-            //  accessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-              options={{
-                country: "CA",
-                language: "en",
-              }}
-            > */}
               <Row>
                 <Form.Group
                   as={Col}
@@ -380,6 +410,21 @@ export const OrderCheckout = () => {
                   <Form.Control.Feedback type="invalid">
                     {errors.city}
                   </Form.Control.Feedback>
+                  <Form.Group as={Col} controlId="street" className="mb-3" md={4}>
+                  <Form.Label>Street</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Street"
+                    autoComplete="address-level2"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.street}
+                    isInvalid={touched.street && !!errors.street}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.street}
+                  </Form.Control.Feedback>
+                </Form.Group>
                 </Form.Group>
                 <Form.Group as={Col} controlId="state" className="mb-3">
                   <Form.Label>State</Form.Label>
