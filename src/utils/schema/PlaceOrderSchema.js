@@ -21,6 +21,7 @@ export const placeOrderSchema = Yup.object().shape({
     "Pincode is required"),
     
   city: Yup.string().required("Please provide a city"),
+  street: Yup.string().required("Please provide a street"),
   state: Yup.string().required("Please provide a sate"),
   phoneNumber: Yup.string()
   .min(10, "Shipping Phone should contain 10 Numbers")
