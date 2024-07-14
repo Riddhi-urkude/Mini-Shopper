@@ -15,7 +15,7 @@ import { date } from "yup";
 import { getUserById } from "../../Services/User.Service";
 
 export const OrderCheckout = () => {
-  document.title = "QuickPik | Finalize Your Purchase";
+  document.title = "MINI-SHOPPER | Finalize Your Purchase";
 
   const { userData } = useContext(UserContext);
   const { cart, setCart } = useContext(CartContext);
@@ -68,11 +68,17 @@ export const OrderCheckout = () => {
     if(userContext.userData) {
       const userId = userContext.userData.userId;
  
-      Promise.all([getUserById(userId)])
-      .then((userRes) => {
-        console.log(userRes);
-        setUser(userRes);
-        setAddresses(userRes.address);
+      // getUserById(userId)
+      // .then((res) => {
+      //   console.log(res);
+      //   setUser(res);
+
+        Promise.all([getUserById(userId)])
+          .then(([userRes]) => {
+            console.log(userRes);
+            setUser(userRes);
+            setAddresses(userRes.address);
+            
  
         setValues({
           firstName: userRes.firstName,
@@ -86,7 +92,7 @@ export const OrderCheckout = () => {
           orderName: "",
         });
  
-        //res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
+        //userRes.address == null ? setShippingAddress(""):setShippingAddress(userRes.address+", "+userRes.street);
       })
       .catch((error) => {
         console.error("Error fetching user or addresses", error);
@@ -116,7 +122,7 @@ export const OrderCheckout = () => {
     }
   };
 
-   const handleSaveAddressSelect = (address) => {
+  const handleSaveAddressSelect = (address) => {
     setShippingAddress(`${address.address}`);
     setValues({
       ...values,
@@ -169,7 +175,7 @@ export const OrderCheckout = () => {
     },
   });
 
-   console.log("Addresses state inside render:", addresses);
+  console.log("Addresses state inside render:", addresses);
 
   return (
     <Container className="mt-3">
@@ -264,6 +270,7 @@ export const OrderCheckout = () => {
             </Col>
           </Row>
         </Col>
+
         <Col lg={6}>
           <Form noValidate onSubmit={handleSubmit}>
 
@@ -292,6 +299,7 @@ export const OrderCheckout = () => {
             </Row>
 
             <hr />
+
           <Row>
                <Form.Group
                 as={Col}
@@ -372,6 +380,7 @@ export const OrderCheckout = () => {
                 </Form.Control.Feedback>
               </Form.Group>
             </Row>
+
               <Row>
                 <Form.Group
                   as={Col}
@@ -396,7 +405,7 @@ export const OrderCheckout = () => {
                 </Form.Group>
               </Row>
               <Row>
-                <Form.Group as={Col} controlId="city" className="mb-3" md={4}>
+                <Form.Group as={Col} controlId="city" className="mb-3" md={6}>
                   <Form.Label>City</Form.Label>
                   <Form.Control
                     type="text"
@@ -410,7 +419,8 @@ export const OrderCheckout = () => {
                   <Form.Control.Feedback type="invalid">
                     {errors.city}
                   </Form.Control.Feedback>
-                  <Form.Group as={Col} controlId="street" className="mb-3" md={4}>
+                </Form.Group>
+                <Form.Group as={Col} controlId="street" className="mb-3" md={6}>
                   <Form.Label>Street</Form.Label>
                   <Form.Control
                     type="text"
@@ -423,10 +433,11 @@ export const OrderCheckout = () => {
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.street}
-                  </Form.Control.Feedback>
+                  </Form.Control.Feedback> 
                 </Form.Group>
-                </Form.Group>
-                <Form.Group as={Col} controlId="state" className="mb-3">
+              </Row>
+              <Row>
+                <Form.Group as={Col} controlId="state" className="mb-3" md={6}>
                   <Form.Label>State</Form.Label>
                   <Form.Control
                     type="text"
@@ -441,7 +452,7 @@ export const OrderCheckout = () => {
                     {errors.state}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group as={Col} controlId="pinCode" className="mb-3">
+                <Form.Group as={Col} controlId="pinCode" className="mb-3" md={6}>
                   <Form.Label>PinCode</Form.Label>
                   <Form.Control
                     type="text"
