@@ -25,4 +25,5 @@ export const profileSchema = Yup.object().shape({
   city: Yup.string().required("City is required"),
  
   street: Yup.string().required("Street is required"),
+ addressType: Yup.string().required("Address Type is required"),
 });
