@@ -183,6 +183,8 @@ const EditProfile = ( history ) => {
                                 </Form.Control.Feedback>
                             </Form.Group>
 
+                            <Row>
+                            <Col md={6}>
                             <Form.Group controlId="street" className="mb-3">
                                 <Form.Label>Street</Form.Label>
                                 <Form.Control
@@ -197,7 +199,9 @@ const EditProfile = ( history ) => {
                                     {formik.errors.street}              
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            
+                            </Col>
+
+                            <Col md={6}>
                             <Form.Group controlId="city" className="mb-3">
                                 <Form.Label>City</Form.Label>
                                 <Form.Control
@@ -212,7 +216,11 @@ const EditProfile = ( history ) => {
                                     {formik.errors.city}              
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            
+                            </Col>
+                            </Row>
+
+                            <Row>
+                                <Col md={6}>
                             <Form.Group controlId="state" className="mb-3">
                                 <Form.Label>State</Form.Label>
                                 <Form.Control
@@ -227,7 +235,9 @@ const EditProfile = ( history ) => {
                                     {formik.errors.state}              
                                 </Form.Control.Feedback>
                                 </Form.Group>
-                                
+                                </Col>
+
+                                <Col md={6}>
                                 <Form.Group controlId="pinCode" className="mb-3">
                                     <Form.Label>Pin Code</Form.Label>
                                     <Form.Control
@@ -242,6 +252,8 @@ const EditProfile = ( history ) => {
                                          {formik.errors.pinCode} 
                                     </Form.Control.Feedback>
                                     </Form.Group>
+                                    </Col>
+                                </Row> 
                                     
                                     <Button variant="primary" type="submit" disabled={loading}>
                                          {loading ? <Spinner animation="border" as="span" size="sm" /> : 'Save'} 
