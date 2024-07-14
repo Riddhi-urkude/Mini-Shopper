@@ -78,6 +78,8 @@ const App = () => {
                 }
               >
                  <Route path="/profile" element={<Profile/>}></Route>
+                <Route path="/edit-profile" element={<EditProfile/>}></Route>
+                <Route path="/save-addresses" element={<AddressManagement/>}></Route>
                <Route path="/cart" element={<ShoppingCart />}></Route>
                
                <Route path="/order-single-product/:data" element={<SingleProductCheckOut/>}></Route>
