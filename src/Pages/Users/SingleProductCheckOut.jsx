@@ -1,5 +1,4 @@
 import React, { useEffect,useState } from "react";
-
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import { useFormik } from "formik";
@@ -13,34 +12,19 @@ import Swal from "sweetalert2";
 //import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate,useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
-
-
-
 import { date } from "yup";
 import { getUserById } from "../../Services/User.Service";
 
 export const SingleProductCheckOut = () => {
-  document.title = "QuickPik | Finalize Your Purchase";
+  document.title = "MINI-SHOPPER | Finalize Your Purchase";
 
-
-  //const { productId } = useParams();
-  // console.log(productId);
- // const {order, setOrder} = useContext(OrderContext);
-  //console.log(order);
   const {singleProduct , setSingleProduct} = useContext(OrderContext);
-
-//  console.log(singleProduct);
   const { userData } = useContext(UserContext);
   const { cart, setCart } = useContext(CartContext);
   const navigate = useNavigate();
-  
-
-
-  
   const userContext = useContext(UserContext);
-  const [user, setUser] = useState(false);
-
+  const [user, setUser] = useState(null);
+  const [addresses, setAddresses] = useState([]);
 
   // loading state for save button
   const [loading, setLoading] = useState(false);
@@ -66,28 +50,31 @@ export const SingleProductCheckOut = () => {
     getUserFromServer();
   },[userContext.userData]);
  
-  const getUserFromServer = () => {
+  const getUserFromServer = async () => {
     if(userContext.userData) {
       const userId = userContext.userData.userId;
- 
-      getUserById(userId)
-      .then((res) => {
-        console.log(res);
-        setUser(res);
+      try{
+        const userRes = await getUserById(userId);
+        console.log(userRes);
+        setUser(userRes);
+        setAddresses(userRes.address || []);
  
         setValues({
-          firstName: res.firstName,
-          lastName: res.lastName,
-          phoneNumber: res.phoneNumber,
-          shippingAddress: res.address+", "+res.street == null ? "":res.address+", "+res.street,
-          city: res.city == null ? "":res.city,
-          state: res.state == null ? "":res.state,
-          pinCode: res.pinCode == null ? "":res.pinCode,
+          firstName: userRes.firstName,
+          lastName: userRes.lastName,
+          phoneNumber: userRes.phoneNumber,
+          street: "",
+          shippingAddress: "",
+          city: "",
+          state: "",
+          pinCode: "",
           orderName: "",
         });
  
-        res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
-      });
+        //res.address == null ? setShippingAddress(""):setShippingAddress(res.address+", "+res.street);
+      } catch (error) {
+        console.error("Error fetching user or addresses", error);
+      }
     }
   };
 
@@ -116,6 +103,18 @@ export const SingleProductCheckOut = () => {
       });
     }
   };
+
+  const handleSaveAddressSelect = (address) => {
+    setShippingAddress(`${address.address}`);
+    setValues({
+      ...values,
+      shippingAddress: `${address.address}`,
+      city: address.city,
+      state: address.state,
+      pinCode: address.pinCode,
+    });
+  };
+
   const {
     handleSubmit,
     handleChange,
@@ -133,6 +132,7 @@ export const SingleProductCheckOut = () => {
       lastName: "",
       phoneNumber: "",
       shippingAddress: shippingAddress,
+      street: "",
       city: "",
       state: "",
       pinCode: "",
@@ -155,6 +155,8 @@ export const SingleProductCheckOut = () => {
       setLoading(false);
     },
   });
+
+  console.log("Addresses state inside render:", addresses);
 
   return (
     <Container className="mt-3">
@@ -252,6 +254,30 @@ export const SingleProductCheckOut = () => {
        }
         <Col lg={6}>
         <Form noValidate onSubmit={handleSubmit}>
+        <Row>
+            <Form.Group controlId="savedAddresses" className="mb-3">
+              <Form.Label>
+                <h3>Select a delivery Address</h3>
+              </Form.Label>
+              <div>
+                {Array.isArray(addresses) && addresses.length > 0 ? (
+                  addresses.map((address, index) => (
+                  <Form.Check
+                    type="radio"
+                    key={index}
+                    name="savedAddress"
+                    label={`${address.address}, ${address.city}, ${address.state}, ${address.pinCode}`}
+                    value={index}
+                    onChange={() => handleSaveAddressSelect(address)}
+                  />
+                ))
+                ) : (
+                  <p>No saved addresses found</p>
+                )}
+              </div>
+            </Form.Group>
+            </Row>
+            <hr />
           <Row>
               <Form.Group
                 as={Col}
@@ -347,7 +373,7 @@ export const SingleProductCheckOut = () => {
                   controlId="shippingAddress"
                   className="mb-3"
                 >
-                  <Form.Label>Shipping Address</Form.Label>
+                  <Form.Label>Address Line</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Shipping Address"
@@ -365,7 +391,22 @@ export const SingleProductCheckOut = () => {
                 </Form.Group>
               </Row>
               <Row>
-                <Form.Group as={Col} controlId="city" className="mb-3" md={4}>
+              <Form.Group as={Col} controlId="street" className="mb-3" md={6}>
+                  <Form.Label>Street</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="street"
+                    autoComplete="address-level2"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.street}
+                    isInvalid={touched.street && !!errors.street}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.street}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group as={Col} controlId="city" className="mb-3" md={6}>
                   <Form.Label>City</Form.Label>
                   <Form.Control
                     type="text"
@@ -434,3 +475,4 @@ export const SingleProductCheckOut = () => {
     </Container>
   );
 };
+
