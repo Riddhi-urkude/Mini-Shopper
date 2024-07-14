@@ -9,8 +9,6 @@ import { useContext } from "react";
 import {Button, Card, Col, Container, Row } from "react-bootstrap";
 //import { IKContext, IKImage } from "imagekitio-react";
 import { Loader } from "../../Components/Loader";
-
-
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
@@ -198,6 +196,7 @@ const { updateOrderItem, removeItem } = useContext(OrderContext);
                   )}
                   <h6>Order Status: {order.orderStatus}</h6>
                   <h6>Payment Status: {order.paymentStatus}</h6>
+                   <h6>Comments: {order.reason}</h6>
                 </Col>
               </Row>
               {/* Billing Details Card */}
