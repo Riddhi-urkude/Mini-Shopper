@@ -245,6 +245,25 @@ const AddressManagement = () => {
               </Form.Control.Feedback> 
             </Form.Group>
 
+            <Row>
+            <Col md={6}>
+            <Form.Group controlId="street" className="mb-3">
+              <Form.Label>Street</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Street"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.street}
+                isInvalid={touched.street && !!errors.street}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.street}
+              </Form.Control.Feedback> 
+            </Form.Group>
+            </Col>
+
+            <Col md={6}>
             <Form.Group controlId="city" className="mb-3">
               <Form.Label>City</Form.Label>
               <Form.Control
@@ -259,7 +278,11 @@ const AddressManagement = () => {
                 {errors.city}
               </Form.Control.Feedback> 
             </Form.Group>
+            </Col>
+           </Row>
 
+          <Row>
+            <Col md={6}>
             <Form.Group controlId="state" className="mb-3">
               <Form.Label>State</Form.Label>
               <Form.Control
@@ -274,7 +297,9 @@ const AddressManagement = () => {
                 {errors.state}
               </Form.Control.Feedback> 
             </Form.Group>
+            </Col>
 
+            <Col md={6}>
             <Form.Group controlId="pinCode" className="mb-3">
               <Form.Label>Pin Code</Form.Label>
               <Form.Control
@@ -289,6 +314,8 @@ const AddressManagement = () => {
                 {errors.pinCode}
               </Form.Control.Feedback> 
             </Form.Group>
+            </Col>
+           </Row>
 
             <Form.Group controlId="phoneNumber" className="mb-3">
               <Form.Label>Phone Number</Form.Label>
