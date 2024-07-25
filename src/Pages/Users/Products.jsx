@@ -12,8 +12,7 @@ import { UserContext } from "../../Context/UserContext";
 import { CartContext } from "../../Context/CartContext";
 
 export const Products = () => {
-  document.title =
-    "MINI-SHOPPER";
+  document.title =    "MINI-SHOPPER";
     const userContext =  useContext(UserContext);
    // console.log(userContext);
     const { cart } = useContext(CartContext);
