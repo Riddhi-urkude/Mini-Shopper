@@ -3,8 +3,8 @@ import { REGEX_VALIDATIONS } from "../regex";
 
 export const registerSchema = Yup.object().shape({
   userType: Yup.string().required("Please Provide User type"),
-  firstName: Yup.string().required("Please provide a first name"),
-  lastName: Yup.string().required("Please provide a last name"),
+  firstName: Yup.string().required("Please provide your first name"),
+  lastName: Yup.string().required("Please provide your last name"),
   email: Yup.string()
     .email("Please provide a valid email")
     .required("Please provide an email"),
@@ -17,17 +17,17 @@ export const registerSchema = Yup.object().shape({
       )
       .required("Please provide a phone number"),
   password: Yup.string()
-    .min(8, "Password should be atleast 8 characacters")
+    .min(10, "Password should be atleast 10 characacters")
     .matches(
       REGEX_VALIDATIONS.PASSWORD,
       "Password should contain atleast one uppercase, one lowercase, one number and one special character"
     )
-    .required("Please provide a password"),
+    .required("Please provide your password"),
   cpassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Please confirm your password"),
-  address: Yup.string()
-    .min(10, "Address should be atleast 100 characters")
+  addressLine: Yup.string()
+    .min(10, "Address should be atleast 10 characters")
     .required("Address is required"),
   city: Yup.string().required("City is required"),
   street: Yup.string().required("Street is required"),
