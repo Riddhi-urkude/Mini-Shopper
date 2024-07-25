@@ -1,4 +1,5 @@
 import React, { useEffect,useState } from "react";
+
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import { useFormik } from "formik";
@@ -12,10 +13,15 @@ import Swal from "sweetalert2";
 //import { IKContext, IKImage } from "imagekitio-react";
 import { useNavigate,useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+
+
+
+
 import { date } from "yup";
 import { getUserById } from "../../Services/User.Service";
 
 export const SingleProductCheckOut = () => {
+
   document.title = "MINI-SHOPPER | Finalize Your Purchase";
 
   const {singleProduct , setSingleProduct} = useContext(OrderContext);
@@ -55,7 +61,7 @@ export const SingleProductCheckOut = () => {
       const userId = userContext.userData.userId;
       try{
         const userRes = await getUserById(userId);
-        console.log(userRes);
+        // console.log(userRes);
         setUser(userRes);
         setAddresses(userRes.address || []);
  
@@ -93,7 +99,7 @@ export const SingleProductCheckOut = () => {
         title: "Order placed successfully",
         timer: 2000,
       });
-      console.log(result.orderId);
+      // console.log(result.orderId);
       navigate(`/order/${result.orderId}`);
     } catch (error) {
       Swal.fire({
@@ -105,13 +111,15 @@ export const SingleProductCheckOut = () => {
   };
 
   const handleSaveAddressSelect = (address) => {
-    setShippingAddress(`${address.address}`);
+    setShippingAddress(`${address.addressLine}`);
     setValues({
       ...values,
-      shippingAddress: `${address.address}`,
+      shippingAddress: `${address.addressLine} ${address.street}`,
       city: address.city,
       state: address.state,
       pinCode: address.pinCode,
+      street: address.street,
+      phoneNumber: address.phoneNumber,
     });
   };
 
@@ -156,7 +164,7 @@ export const SingleProductCheckOut = () => {
     },
   });
 
-  console.log("Addresses state inside render:", addresses);
+//  console.log("Addresses state inside render:", addresses);
 
   return (
     <Container className="mt-3">
@@ -250,11 +258,8 @@ export const SingleProductCheckOut = () => {
     :  (+singleProduct.quantity*singleProduct.unitPrice)}</h4>
             </Col>
           </Row>
-        </Col>
-       }
-        <Col lg={6}>
-        <Form noValidate onSubmit={handleSubmit}>
-        <Row>
+          <hr/>
+          <Row>
             <Form.Group controlId="savedAddresses" className="mb-3">
               <Form.Label>
                 <h3>Select a delivery Address</h3>
@@ -266,7 +271,7 @@ export const SingleProductCheckOut = () => {
                     type="radio"
                     key={index}
                     name="savedAddress"
-                    label={`${address.address}, ${address.city}, ${address.state}, ${address.pinCode}`}
+                    label={`${address.addressType} : ${address.addressLine}, ${address.street}, ${address.phoneNumber}, ${address.city}, ${address.state}, ${address.pinCode}`}
                     value={index}
                     onChange={() => handleSaveAddressSelect(address)}
                   />
@@ -277,6 +282,33 @@ export const SingleProductCheckOut = () => {
               </div>
             </Form.Group>
             </Row>
+        </Col>
+       }
+        <Col lg={6}>
+        <Form noValidate onSubmit={handleSubmit}>
+        {/* <Row>
+            <Form.Group controlId="savedAddresses" className="mb-3">
+              <Form.Label>
+                <h3>Select a delivery Address</h3>
+              </Form.Label>
+              <div>
+                {Array.isArray(addresses) && addresses.length > 0 ? (
+                  addresses.map((address, index) => (
+                  <Form.Check
+                    type="radio"
+                    key={index}
+                    name="savedAddress"
+                    label={`${address.addressLine}, ${address.street}, ${address.phoneNumber}, ${address.city}, ${address.state}, ${address.pinCode}`}
+                    value={index}
+                    onChange={() => handleSaveAddressSelect(address)}
+                  />
+                ))
+                ) : (
+                  <p>No saved addresses found</p>
+                )}
+              </div>
+            </Form.Group>
+            </Row> */}
             <hr />
           <Row>
               <Form.Group
@@ -475,4 +507,3 @@ export const SingleProductCheckOut = () => {
     </Container>
   );
 };
-
