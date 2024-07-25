@@ -5,14 +5,14 @@ import { publicAxiosInstance, privateAxiosInstance } from "./Axios.Service";
 
 // get order by id
 export const getOrderById = async (orderId) => {
-  const result = await privateAxiosInstance.get(`/orders/${orderId}`);
+  const result = await privateAxiosInstance.post(`/minishop/${orderId}`);
   return result.data;
 };
 
 
 // get all orders by user id
 export const getAllOrdersByUserId = async (userId) => {
-  const result = await privateAxiosInstance.get(`/orders/user/${userId}`);
+  const result = await privateAxiosInstance.post(`/minishop/user/${userId}`);
    return result.data;
 };
 
@@ -20,27 +20,28 @@ export const getAllOrdersByUserId = async (userId) => {
 export const createOrder = async (order) => {
     console.log("coming inside create order" );
     console.log(order);
-   const result = await privateAxiosInstance.post(`/orders`, order);
+   const result = await privateAxiosInstance.post(`/minishop/placeOrder`, order);
     return result.data;
 };
 
 
 export const createOrderwithSingleProduct= async (order) => {
   console.log(order);
-  const result = await privateAxiosInstance.post(`/orders/singleProduct`, order);
+  const result = await privateAxiosInstance.post(`/minishop/singleProduct`, order);
   return result.data;
 }
 
 export const createOrderByExcelSheet = async (order) => {
   console.log(order);
-  const result = await privateAxiosInstance.post(`/orders/excel`, order);
-  return result.data;
+  const result = await privateAxiosInstance.post(`/minishop/excelOrder`, order);
+  console.log(result);
+  return result;
 
 }
 
 export const getAllProductsForExcel = async () =>{
   try{
-     return await privateAxiosInstance.get(`/orders/excel`);
+     return await privateAxiosInstance.get(`/minishop/excel`);
   }catch(err){
      console.log(err);
   }
@@ -56,7 +57,7 @@ export const updateOrder = async (values) => {
   //   reason : "i won't tell you"
   // }
   try{
-    const result = await privateAxiosInstance.post(`/orders/changeOrderStatus`, values);
+    const result = await privateAxiosInstance.post(`/minishop/changeOrderStatus`, values);
     console.log(result);
     
     return result.data;
@@ -72,7 +73,7 @@ export const updateOrder = async (values) => {
 // add item to order
 export const updateOrderItemService = async (data) => {
   console.log(data);
-  const res = await privateAxiosInstance.post(`/orders/updateOrderItem`, data);
+  const res = await privateAxiosInstance.post(`/minishop/updateOrderItem`, data);
 //  console.log(res);
   return res.data;
 };
@@ -81,7 +82,7 @@ export const updateOrderItemService = async (data) => {
 export const removeItemFromOrder = async (orderItemId) => {
   console.log(orderItemId);
   try{
-   const res= await privateAxiosInstance.delete(`/orders/item/${orderItemId}`);
+   const res= await privateAxiosInstance.delete(`/minishop/item/${orderItemId}`);
   //return res.data;
   //console.log(res);
   return res.data;
@@ -98,7 +99,7 @@ export const removeAllItemsFromOrder = async (userId) => {
 };
 
 export const getAllOrders = async () => {
-  const result = await privateAxiosInstance.post(`/orders/getAllOrders`);
+  const result = await privateAxiosInstance.post(`/minishop/getAllOrders/${"leodas@gmail.com"}`);
   return result.data;
 
 }
