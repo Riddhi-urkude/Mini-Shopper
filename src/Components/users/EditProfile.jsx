@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { UserContext } from '../../context/UserContext'
+import { UserContext } from "../../Context/UserContext";
 import { useFormik } from 'formik';
 import { profileSchema } from '../../utils/schema/ProfileSchema';
-import { getUserById, updateUser } from '../../services/user.service';
+import { getUserById, updateUser,addAddress } from "../../Services/User.Service";
 import { toast } from 'react-toastify';
 import { Button, Col, Container, Form, Row, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 
-const EditProfile = ( history ) => {
+export const EditProfile = ( history ) => {
     const userContext = useContext(UserContext);
 
     const [loading, setLoading] = useState(false);
@@ -20,8 +20,9 @@ const EditProfile = ( history ) => {
             lastName: '',
             email: '',
             phoneNumber: '',
+            addressId: 9999,
             addressType: '',
-            address: '',
+            addressLine: '',
             street:'',
             city: '',
             state: '',
@@ -30,17 +31,18 @@ const EditProfile = ( history ) => {
         validationSchema: profileSchema,
         onSubmit: (values) => {
             setLoading(true);
-            console.log('Submitting forms with values:', values);
-            updateUser(userContext.userData.userId, values)
+            // console.log('Submitting forms with values:', values);
+            values.addressId = 123;
+           addAddress(userContext.userData.userId, values)
                 .then((response) => {
-                    console.log('Update user Response:', response.data);
+                //    console.log('Update user Response:', response.data);
                     toast.success("Profile Updated Successfully");
-                    console.log('Profile updated successfully');
-                    history.push('/'); // Redirect to profile page 
+                    // console.log('Profile updated successfully');
+                    // history.push('/'); // Redirect to profile page 
                 })
                 .catch((error) => {
                     toast.error("Failed to update profile. Please try again later.");
-                    console.log('Error in updating profile');
+                    // console.log('Error in updating profile');
                 })
                 .finally(() => {
                     setLoading(false);
@@ -58,7 +60,7 @@ const EditProfile = ( history ) => {
       
       getUserById(userId)
       .then((userRes) => {
-        console.log(userRes);
+        // console.log(userRes);
         setUser(userRes);
 
         formik.setValues({
@@ -67,7 +69,7 @@ const EditProfile = ( history ) => {
           email: userRes.email || '',
           phoneNumber: userRes.phoneNumber || '',
           addressType: userRes.addressType || '',
-          address: userRes.shippingAddress || '',
+          addressLine: userRes.shippingAddress || '',
           city: userRes.city || '',
           street: userRes.street || '',
           state: userRes.state || '',
@@ -97,7 +99,7 @@ const EditProfile = ( history ) => {
                         <Form.Label>First Name</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="firstName"
+                            placeholder="First Name"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.firstName}
@@ -112,7 +114,7 @@ const EditProfile = ( history ) => {
                         <Form.Label>Last Name</Form.Label>
                         <Form.Control
                             type="text"
-                            placeholder="lastName"
+                            placeholder="Last Name"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.lastName}
@@ -127,33 +129,103 @@ const EditProfile = ( history ) => {
                             <Form.Label>Email</Form.Label>
                             <Form.Control
                                 type="email"
-                                placeholder="email"
+                                placeholder="Email"
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.email}
                                 isInvalid={formik.touched.email && !!formik.errors.email}
+                                disabled
                             />
                             <Form.Control.Feedback type="invalid">                
                                 {formik.errors.email}              
                             </Form.Control.Feedback>
                         </Form.Group>
-                        
-                        <Form.Group controlId="phoneNumber" className="mb-3">
-                            <Form.Label>Phone Number</Form.Label>
-                            <Form.Control
-                                type="text"
-                                placeholder="phoneNumber"
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                value={formik.values.phoneNumber}
-                                isInvalid={formik.touched.phoneNumber && !!formik.errors.phoneNumber}
-                            />
-                            <Form.Control.Feedback type="invalid">                
-                                {formik.errors.phoneNumber}              
-                            </Form.Control.Feedback>
-                            </Form.Group>
 
-                            <Form.Group controlId="addressType" className="mb-3">
+                            
+                            <Form.Group controlId="addressLine" className="mb-3">
+                                <Form.Label>Address Line</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Address Line"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.addressLine}
+                                    isInvalid={formik.touched.addressLine && !!formik.errors.addressLine}
+                                />
+                                <Form.Control.Feedback type="invalid">                
+                                    {formik.errors.addressLine}              
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            <Row>
+                            <Col md={4}>
+                            <Form.Group controlId="street" className="mb-3">
+                                <Form.Label>Street</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="Street" 
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.street}
+                                    isInvalid={formik.touched.street && !!formik.errors.street}
+                                />
+                                <Form.Control.Feedback type="invalid">                
+                                    {formik.errors.street}              
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            </Col>
+                            <Col md={4}>
+                            <Form.Group controlId="city" className="mb-3">
+                                <Form.Label>City</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="City"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.city}
+                                    isInvalid={formik.touched.city && !!formik.errors.city}
+                                />
+                                <Form.Control.Feedback type="invalid">                
+                                    {formik.errors.city}              
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                            </Col>
+                            <Col md={4}>
+                            <Form.Group controlId="state" className="mb-3">
+                                <Form.Label>State</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    placeholder="State"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.state}
+                                    isInvalid={formik.touched.state && !!formik.errors.state}
+                                />
+                                <Form.Control.Feedback type="invalid">                
+                                    {formik.errors.state}              
+                                </Form.Control.Feedback>
+                                </Form.Group>
+                                </Col>
+                                </Row>
+                                <Row>
+                                    <Col md={6}>
+                                <Form.Group controlId="pinCode" className="mb-3">
+                                    <Form.Label>Pin Code</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        placeholder="Pin Code"
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        value={formik.values.pinCode}
+                                        isInvalid={formik.touched.pinCode && !!formik.errors.pinCode}
+                                    />
+                                    <Form.Control.Feedback type="invalid">
+                                         {formik.errors.pinCode} 
+                                    </Form.Control.Feedback>
+                                    </Form.Group>
+                                    </Col>
+                                    <Col md={6}>
+
+                                    <Form.Group controlId="addressType" className="mb-3">
                                 <Form.Label>Address Type</Form.Label>
                                 <Form.Control
                                     type="text"
@@ -167,93 +239,22 @@ const EditProfile = ( history ) => {
                                     {formik.errors.addressType}              
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            
-                            <Form.Group controlId="address" className="mb-3">
-                                <Form.Label>Address Line</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="address"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.address}
-                                    isInvalid={formik.touched.address && !!formik.errors.address}
-                                />
-                                <Form.Control.Feedback type="invalid">                
-                                    {formik.errors.address}              
-                                </Form.Control.Feedback>
-                            </Form.Group>
-
-                            <Row>
-                            <Col md={6}>
-                            <Form.Group controlId="street" className="mb-3">
-                                <Form.Label>Street</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="street"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.street}
-                                    isInvalid={formik.touched.street && !!formik.errors.street}
-                                />
-                                <Form.Control.Feedback type="invalid">                
-                                    {formik.errors.street}              
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                            </Col>
-
-                            <Col md={6}>
-                            <Form.Group controlId="city" className="mb-3">
-                                <Form.Label>City</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="city"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.city}
-                                    isInvalid={formik.touched.city && !!formik.errors.city}
-                                />
-                                <Form.Control.Feedback type="invalid">                
-                                    {formik.errors.city}              
-                                </Form.Control.Feedback>
-                            </Form.Group>
                             </Col>
                             </Row>
-
-                            <Row>
-                                <Col md={6}>
-                            <Form.Group controlId="state" className="mb-3">
-                                <Form.Label>State</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    placeholder="state"
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-                                    value={formik.values.state}
-                                    isInvalid={formik.touched.state && !!formik.errors.state}
-                                />
-                                <Form.Control.Feedback type="invalid">                
-                                    {formik.errors.state}              
-                                </Form.Control.Feedback>
-                                </Form.Group>
-                                </Col>
-
-                                <Col md={6}>
-                                <Form.Group controlId="pinCode" className="mb-3">
-                                    <Form.Label>Pin Code</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="pinCode"
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        value={formik.values.pinCode}
-                                        isInvalid={formik.touched.pinCode && !!formik.errors.pinCode}
-                                    />
-                                    <Form.Control.Feedback type="invalid">
-                                         {formik.errors.pinCode} 
-                                    </Form.Control.Feedback>
-                                    </Form.Group>
-                                    </Col>
-                                </Row> 
+                                    <Form.Group controlId="phoneNumber" className="mb-3">
+                            <Form.Label>Phone Number</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Phone Number"
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                value={formik.values.phoneNumber}
+                                isInvalid={formik.touched.phoneNumber && !!formik.errors.phoneNumber}
+                            />
+                            <Form.Control.Feedback type="invalid">                
+                                {formik.errors.phoneNumber}              
+                            </Form.Control.Feedback>
+                            </Form.Group>
                                     
                                     <Button variant="primary" type="submit" disabled={loading}>
                                          {loading ? <Spinner animation="border" as="span" size="sm" /> : 'Save'} 
@@ -266,4 +267,4 @@ const EditProfile = ( history ) => {
   )
 }
 
-export default EditProfile
+//export default EditProfile;
