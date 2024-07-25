@@ -13,7 +13,7 @@ export const getAllProducts= async (page) =>{
 
 export const getProductById = async (productId) =>{
   try {
-    const result = await privateAxiosInstance.post(`/products/productId/${productId}`); 
+    const result = await publicAxiosInstance.get(`/products/productId/${productId}`); 
      return result.data;
   } catch (err) {
 //    console.log(err);
