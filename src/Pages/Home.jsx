@@ -12,7 +12,7 @@ export default function Home() {
     <Hero
       title={"MINI-SHOPPER"}
       description={
-        "Welcome to SHOPPER, your one-stop-shop. Our easy-to-use platform makes it simple to find and purchase the products you need. Plus, enjoy exceptional customer service and support from our dedicated team."
+        "Welcome to MINI-SHOPPER, your one-stop-shop. Our easy-to-use platform makes it simple to find and purchase the products you need. Plus, enjoy exceptional customer service and support from our dedicated team."
       }
     >
 
