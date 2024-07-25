@@ -12,14 +12,15 @@ import {
   Modal
 } from "react-bootstrap";
 import { useFormik } from "formik";
-import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../Context/UserContext";
 import { profileSchema } from "../../utils/schema/ProfileSchema";
+import { AddressSchema } from "../../utils/schema/AddressSchema";
 import { useEffect } from "react";
-import { getUserById, updateUser } from "../../services/user.service";
+import { getUserById, updateUser } from "../../Services/User.Service";
 import { toast } from "react-toastify";
 
 
-const AddressManagement = () => {
+export const AddressManagement = () => {
   document.title = "MINI-SHOPPER | AddressManagement";
   const userContext = useContext(UserContext);
 
@@ -40,11 +41,11 @@ const AddressManagement = () => {
 
   const [showModal, setShowModal] = useState(false);
 
- 
+ let [updatedAddress, setUpdatedAddress] = useState("");
 
   useEffect(() => {
     getUserFromServer();
-}, [userContext.userData]);
+}, [userContext.userData, updatedAddress]);
 
   const getUserFromServer = () => {
     if (userContext.userData) {
@@ -55,7 +56,7 @@ const AddressManagement = () => {
       getUserById(userId)
         .then((userRes) => {
             // console.log("in profile page");
-             console.log(userRes);
+              console.log(userRes);
           setUser(userRes);
           setAddresses(userRes.address);
 
@@ -75,7 +76,7 @@ const AddressManagement = () => {
   };
 
   const handleEditAddress = (address) => {
-    console.log("Editing Address: ", address);
+    // console.log("Editing Address: ", address);
     setEditingAddress(address);
     setShowModal(true);
   };
@@ -86,17 +87,19 @@ const AddressManagement = () => {
   };
 
   const handleModalSave = async (values) => {
-    console.log("saved values: ", values);
+    // console.log("saved values: ", values);
     try {
     const updateAddress = { ...editingAddress, ...values };
     const updateAddresses = addresses.map((addr) =>
       addr._id === editingAddress._id ? { ...addr, ...values } : addr
     );
     setAddresses(updateAddresses);
-    await updateUserAddresses(updateAddresses);
+    const updatedAddress = await updateUserAddresses(values);
     setShowModal(false);
+    setUpdatedAddress(updatedAddress);
+    // console.log(updatedAddress);
     toast.success("Address updated successfully");
-
+      
     // Update the form values to reflect the save address
     setValues({
       ...values,
@@ -108,7 +111,7 @@ const AddressManagement = () => {
       pinCode: updateAddress.pinCode
     });
   } catch (error) {
-    console.error("Error updating address:", error);
+    // console.error("Error updating address:", error);
     toast.error("Failed to update address, Please try again later.")
   }
   }; 
@@ -118,16 +121,19 @@ const AddressManagement = () => {
       ...user,
       address: updateAddresses,
     };
-    console.log("Data to be sent to server: ", data);
-    await updateUser(userContext.userData.userId, data);
+    // console.log("Data to be sent to server: ", data);
+   return await updateUser(userContext.userData.userId, updateAddresses);
+      
+    
   };
 
   const handleSaveAddressSelect = (address) => {
     setShippingAddress(`${address.address}`);
     setValues({
       ...values,
-      shippingAddress: `${address.address}`,
+      addressLine: `${address.addressLine}`,
       addressType: `${address.addressType}`,
+      street: address.street,
       city: address.city,
       state: address.state,
       pinCode: address.pinCode,
@@ -147,14 +153,14 @@ const AddressManagement = () => {
  }  = useFormik({
   initialValues: {
     phoneNumber: "",
+    addressLine: "",
     addressType: "",
-    address: "",
     street: "",
     city: "",
     state: "",
     pinCode: "",
   },
-  validationSchema: profileSchema,
+  validationSchema: AddressSchema,
   onSubmit: (values) => {
     handleModalSave(values);
   },
@@ -163,15 +169,18 @@ const AddressManagement = () => {
  useEffect(() => {
   if (editingAddress) {
     setValues({
+        addressId: editingAddress.addressId,
+        addressLine: editingAddress.addressLine,
       phoneNumber: editingAddress.phoneNumber,
       addressType: editingAddress.addressType,
-      address: editingAddress.address,
+      street: editingAddress.street,
       city: editingAddress.city,
       state: editingAddress.state,
       pinCode: editingAddress.pinCode,
     });
   }
- }, [editingAddress]);
+
+ }, [editingAddress ]);
 
   return (
     <>
@@ -189,7 +198,7 @@ const AddressManagement = () => {
                           <Card key={index} className="mb-3">
                             <Card.Body>
                               <Card.Text>
-                                {address.phoneNumber}, {address.address}, {address.city}, {address.state}, {address.pinCode}
+                                 {address.addressLine}, {address.street}, {address.phoneNumber}, {address.city}, {address.state}, {address.pinCode}
                               </Card.Text>
                               <Button
                                 variant="secondary"
@@ -230,28 +239,27 @@ const AddressManagement = () => {
               </Form.Control.Feedback> 
             </Form.Group>
 
-            <Form.Group controlId="address" className="mb-3">
+            <Form.Group controlId="addressLine" className="mb-3">
               <Form.Label>Address Line</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Address"
                 onChange={handleChange}
                 onBlur={handleBlur}
-                value={values.address}
-                isInvalid={touched.address && !!errors.address}
+                value={values.addressLine}
+                isInvalid={touched.addressLine && !!errors.addressLine}
               />
               <Form.Control.Feedback type="invalid">
-                {errors.address}
+                {errors.addressLine}
               </Form.Control.Feedback> 
             </Form.Group>
-
             <Row>
             <Col md={6}>
             <Form.Group controlId="street" className="mb-3">
               <Form.Label>Street</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Street"
+                placeholder="Address"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.street}
@@ -283,6 +291,7 @@ const AddressManagement = () => {
 
           <Row>
             <Col md={6}>
+
             <Form.Group controlId="state" className="mb-3">
               <Form.Label>State</Form.Label>
               <Form.Control
@@ -300,6 +309,7 @@ const AddressManagement = () => {
             </Col>
 
             <Col md={6}>
+
             <Form.Group controlId="pinCode" className="mb-3">
               <Form.Label>Pin Code</Form.Label>
               <Form.Control
@@ -316,7 +326,6 @@ const AddressManagement = () => {
             </Form.Group>
             </Col>
            </Row>
-
             <Form.Group controlId="phoneNumber" className="mb-3">
               <Form.Label>Phone Number</Form.Label>
               <Form.Control
@@ -343,4 +352,4 @@ const AddressManagement = () => {
   );
 };
 
-export default AddressManagement
+//export default AddressManagement;
