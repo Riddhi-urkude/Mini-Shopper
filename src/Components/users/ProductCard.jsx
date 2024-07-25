@@ -9,7 +9,16 @@ export const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { addItem } = useContext(CartContext);
   const { isLogin } = useContext(UserContext);
+  const  userContext  = useContext(UserContext);
+  let role="user";
+  if(userContext.userData != null){
+     role = userContext.userData.role;
+  }
 
+  let user = false;
+  if(role === "user"){
+    user = true;
+  }
   const {cart} = useContext(CartContext);
   let cartProducts = '';
   if(cart!=null){
@@ -105,10 +114,11 @@ export const ProductCard = ({ product }) => {
                 onClick={() => {
                   handleAddToCart(product.productId);
                 }}
+                hidden={!user}
              >
                 Add to Cart
              </Button>
-           
+              
            )}
           {/* <Button
             variant="primary"
