@@ -10,10 +10,8 @@ export const getAllCategories = async ()=>{
 
 
 export const getCategoryById = async (categoryId)=>{
+    console.log(categoryId);
     const res = await publicAxiosInstance.get(`/categories/${categoryId}`);
     return res.data;
-
-    // console.log("need to code here man");
-    // return "need to code here man";
 }
 
