@@ -17,13 +17,14 @@ import {createOrderwithSingleProduct} from "../../Services/Order.Service";
 
 export const SingleProductPage = () => {
   const [product, setProduct] = useState(null);
-  document.title = `Product | ${product?.title}`;
-
+  document.title = `Product | ${product?.productName}`;
+  // console.log(product);
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
-  const { isLogin } = useContext(UserContext);
+  const { isLogin, isShopkeeper } = useContext(UserContext);
+  const userContext = useContext(UserContext);
 
   const { productId } = useParams();
 
@@ -34,6 +35,24 @@ export const SingleProductPage = () => {
 
   // quantity state for product
   const [quantity, setQuantity] = useState(1);
+
+  let role = "user";
+
+  if(userContext.userData != null){
+    role = userContext.userData.role;
+ }
+  let user = false;
+  if(role === "user"){
+    user = true;
+  }
+
+  const {cart} = useContext(CartContext);
+  let cartProducts = '';
+  if(cart!=null){
+     cartProducts = cart.items.map((item)=>{
+      return item.product.productId; 
+    });
+  }
 
   // handle quantity change
   const handleQuantityChange = (e) => {
@@ -204,22 +223,47 @@ export const SingleProductPage = () => {
               <Button
                 variant="primary"
                 className="me-2"
-                disabled={!product.stock }
+                disabled={!product.stock || isShopkeeper}
                 onClick={() => {
                   handleBuyNow(product.productId, quantity);
                 }}
+                hidden={!user}
               >
                 Buy now
               </Button>
-              <Button
+              {/* <Button
                 variant="outline-primary"
                 disabled={!product.stock}
                 onClick={() => {
                   handleAddToCart(product.productId, quantity);
                 }}
+                hidden={!user}
               >
                 Add to Cart
-              </Button>
+              </Button> */}
+               {cartProducts.includes(product.productId) ?(
+            <Button
+              variant="outline-primary"
+              disabled={true}
+              hidden={!user}
+            >
+              Already Available in Cart
+            </Button>
+          
+             ) :( 
+             <Button
+                variant="outline-primary"
+                // size="sm"
+                disabled={!product.stock}
+                onClick={() => {
+                  handleAddToCart(product.productId);
+                }}
+                hidden={!user}
+             >
+                Add to Cart
+             </Button>
+              
+           )}
             </div>
           </Col>
         </Row>
