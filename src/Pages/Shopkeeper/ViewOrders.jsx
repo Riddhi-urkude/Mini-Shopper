@@ -11,6 +11,8 @@ import { useFormik } from 'formik';
 import { SideBar } from '../../Components/SideBar';
 import {OrderView} from "./OrderView";
 import { placeOrderSchema } from '../../utils/schema/PlaceOrderSchema';
+import { useContext } from "react";
+import { UserContext } from "../../Context/UserContext";
 
 // import React, { useEffect, useState } from 'react'
 // import { getAllOrders, updateOrder } from '../../Services/Order.Service';
@@ -30,7 +32,7 @@ export const ViewOrders = () => {
     document.title = "MINI-SHOPPER|View Orders";
  
     const [show, setShow] = useState(false);
- 
+    const userContext = useContext(UserContext);
     // method for sidebar
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -47,20 +49,18 @@ export const ViewOrders = () => {
         const fetchOrders = async () => {
             try {
                 const data = await getAllOrders();
-                console.log(data);
                 setOrders(data);
                 setLoading(false);
             } catch (error) {
                 toast.error("Failed to load orders");
             }
         };
- 
+        setUpdateData('');
         fetchOrders();
     }, [updateData]);
  
     const handleOrderViewModalClose = () => setShowOrderViewModal(false);
     const handleOrderViewModalShow = (order) => {
-        console.log(order);
         setSelectedOrder(order);
         setShowOrderViewModal(true);
     };
@@ -77,8 +77,9 @@ export const ViewOrders = () => {
                 // console.log(values);
                 // console.log(orderId);
                 const updatedData  = {
+                   userId: userContext.userData.userId,
                    reason: values.comments,
-                    expectedDeliveryDate : values.deliveredDate,
+                   expectedDeliveryDate : values.deliveredDate,
                    orderStatus : values.orderStatus,
                    orderId : orderId
                 }
@@ -98,7 +99,6 @@ export const ViewOrders = () => {
 
                 handleOrderViewModalClose();
                 setUpdateData(orderId);
-                console.log("reached end");
 
             } catch (err) {
                 toast.error("Something went wrong! Unable to update order");
@@ -130,8 +130,6 @@ export const ViewOrders = () => {
             },
            validationSchema: OrderStatusSchema,
             onSubmit: (values) => {
-                console.log("in on submit");
-                console.log(values);
                 setLoading(true);
                 updateOrderDetails(
                     {
@@ -400,7 +398,7 @@ export const ViewOrders = () => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             isInvalid={touched.orderStatus && !! errors.orderStatus}
-                            // disabled = {selectedOrder.orderStatus === "FULFILL"  }
+                             disabled = {selectedOrder.orderStatus === "FULFILL"  }
                             >
                                 <option value="">Select Order Status</option>
                                 <option value="PENDING">PENDING</option>
