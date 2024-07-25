@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import {
   Alert,
   Button,
@@ -12,7 +11,7 @@ import {
 import { NavLink } from "react-router-dom";
 import { useFormik } from "formik";
 import { registerSchema } from "../utils/schema/RegisterSchema.js";
-import { registerUser,registerShopkeeper,  testHere } from "../Services/User.Service.js";
+import { registerUser } from "../Services/User.Service.js";
  
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +22,7 @@ export const Register = () => {
   document.title = "MINI-SHOPPER | Register";
  
   const navigate = useNavigate();
- // const [showPassword, setShowPassword] = useState(false);
+  
   // Server side validation error
   const [serverError, setServerError] = useState(null);
 
@@ -53,7 +52,7 @@ export const Register = () => {
     setFieldValue("address", inputValue);
   };
  
-  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue } =
+  const { handleSubmit, handleChange, handleBlur, values, touched, errors, setFieldValue,setFieldTouched } =
    
     useFormik({
       initialValues: {
@@ -65,7 +64,7 @@ export const Register = () => {
         cpassword: "",
         userId: "",
         userType: "",
-        address: "",
+        addressLine: "",
         city: "",
         street: "",
         state: "",
@@ -75,34 +74,26 @@ export const Register = () => {
      
       validationSchema: registerSchema,
       onSubmit: (values, actions) => {
-        const { address, city, street state, pinCode, addressType, ...otherValues } = values;
+        const { address, city, street, state, pinCode, addressType,phoneNumber, ...otherValues } = values;
         // Transform the data as an array of obj
         const transformedData = {
           ...otherValues,
           userId: values.email,
           role: values.userType,
           address: [{
-            address: values.address,
+            addressId: 99999,
+            addressLine: values.addressLine,
             city: values.city,
             state: values.state,
             street: values.street,
             pinCode: values.pinCode,
+            phoneNumber: values.phoneNumber,
             addressType: values.addressType
           }]
         };
-        
-        //set loading to true for spinner
-        console.log("printing in register "+values.userType);
-        // let api;
-        // if(values.userType=="user"){
-        //    api = registerUser(values)
-        // }else if(values.userType=="shopkeeper"){
-        //    api = registerShopkeeper(values);
-        // }
-       // setLoading(true);
        registerUser(transformedData)
           .then((res) => {
-            console.log(res);
+            // console.log(res);
             if(res.status===201){
              // navigate to login page
              toast.success("Registered successfully!");
@@ -113,8 +104,7 @@ export const Register = () => {
             actions.resetForm();
  
             }else if(res.status===208){
-              toast.error("Entered Email address already exist, please try again with other Email address");
- 
+              toast.error(res.data);
             }
           })
           .catch((err) => {
@@ -265,23 +255,7 @@ export const Register = () => {
             </Form.Group>
           </Row>
 
-          <Row className="mb-3">
-            <Form.Group as={Col} controlId="phoneNumber">
-              <Form.Label>Phone Number</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Phone Number"
-                autoComplete="on"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.phoneNumber}
-                isInvalid={touched.phoneNumber && errors.phoneNumber}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.phoneNumber}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Row>
+        
          
           <Row className="mb-3">
             <Form.Group as={Col} controlId="password">
@@ -347,7 +321,7 @@ export const Register = () => {
           <Row>
               <Form.Group
                 as={Col}
-                controlId="address"
+                controlId="addressLine"
                 md={12}
                 className="mb-3"
               >
@@ -356,17 +330,37 @@ export const Register = () => {
                         type="text"
                         placeholder="Address"
                         autoComplete="address-line-1"
-                        value={address}
-                        onChange={handleAddressInputChange}
+                        value={values.addressLine}
+                        onChange={handleChange}
                         onBlur={handleAddressInputBlur}
-                        isInvalid={touched.address && !!errors.address}
+                        isInvalid={touched.addressLine && !!errors.addressLine}
                       />
                       <Form.Control.Feedback type="invalid">
-                        {errors.address}
+                        {errors.addressLine}
                       </Form.Control.Feedback>
                     </Form.Group>
                   </Row>
                   <Row>
+                  <Form.Group
+                      as={Col}
+                      controlId="street"
+                      md={4}
+                      className="mb-3"
+                    >
+                      <Form.Label>Street</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Street"
+                        autoComplete="address-level2"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.street}
+                        isInvalid={touched.street && !!errors.street}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.street}
+                      </Form.Control.Feedback>
+                    </Form.Group>
                     <Form.Group
                       as={Col}
                       controlId="city"
@@ -387,26 +381,7 @@ export const Register = () => {
                         {errors.city}
                       </Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group
-                      as={Col}
-                      controlId="street"
-                      md={4}
-                      className="mb-3"
-                    >
-                      <Form.Label>Street</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Street"
-                        autoComplete="address-level2"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.street}
-                        isInvalid={touched.street && !!errors.street}
-                      />
-                      <Form.Control.Feedback type="invalid">
-                        {errors.street}
-                      </Form.Control.Feedback>
-                    </Form.Group>
+                    
                     <Form.Group
                       as={Col}
                       controlId="state"
@@ -471,6 +446,23 @@ export const Register = () => {
                     </Form.Group>
                     </Row>
                   </Row>
+                  <Row className="mb-3">
+            <Form.Group as={Col} controlId="phoneNumber">
+              <Form.Label>Phone Number</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Phone Number"
+                autoComplete="on"
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.phoneNumber}
+                isInvalid={touched.phoneNumber && errors.phoneNumber}
+              />
+              <Form.Control.Feedback type="invalid">
+                {errors.phoneNumber}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Row>
  
           {/* Register Button */}
           {/* Disable button while loading and show spinner as well */}
