@@ -2,6 +2,7 @@ import React, {useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row, Spinner } from "react-bootstrap";
 import { placeOrderSchema } from "../../utils/schema/PlaceOrderSchema";
 import { useFormik } from "formik";
+import { AddressAutofill } from "@mapbox/search-js-react";
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { CartContext } from "../../Context/CartContext";
@@ -75,10 +76,9 @@ export const OrderCheckout = () => {
 
         Promise.all([getUserById(userId)])
           .then(([userRes]) => {
-            console.log(userRes);
+            // console.log(userRes);
             setUser(userRes);
-            setAddresses(userRes.address);
-            
+        setAddresses(userRes.address);            
  
         setValues({
           firstName: userRes.firstName,
@@ -111,25 +111,32 @@ export const OrderCheckout = () => {
         title: "Order placed successfully",
         timer: 2000,
       });
-      console.log(result.orderId);
+      // console.log(result.orderId);
       navigate(`/order/${result.orderId}`);
     } catch (error) {
+      let title = "Unable to place order";            
+       if (error.response?.data?.detail) {                 
+        title = error.response.data.detail;             
+      }     
       Swal.fire({
         icon: "error",
-        title: "Unable to place order",
+        title: title,
         timer: 2000,
       });
     }
   };
 
   const handleSaveAddressSelect = (address) => {
-    setShippingAddress(`${address.address}`);
+ //   setShippingAddress(`${address.address}`);
+     setShippingAddress(`${address.addressLine}`);
     setValues({
       ...values,
-      shippingAddress: `${address.address}`,
+      shippingAddress: `${address.addressLine} ${address.street}`,
       city: address.city,
       state: address.state,
       pinCode: address.pinCode,
+      street: address.street,
+      phoneNumber: address.phoneNumber,
     });
   };
 
@@ -168,14 +175,14 @@ export const OrderCheckout = () => {
         ...values,
         pinCode: values.pinCode.replace(/\s+/g, ""),
       };
-      console.log(data);
+      // console.log(data);
       placeOrder(data);
       actions.resetForm();
       setLoading(false);
     },
   });
 
-  console.log("Addresses state inside render:", addresses);
+  // console.log("Addresses state inside render:", addresses);
 
   return (
     <Container className="mt-3">
@@ -269,12 +276,8 @@ export const OrderCheckout = () => {
               <h4>Total Order Amount: ₹ {getTotalAmount()}</h4>
             </Col>
           </Row>
-        </Col>
-
-        <Col lg={6}>
-          <Form noValidate onSubmit={handleSubmit}>
-
-            <Row>
+          <hr/>
+          <Row>
             <Form.Group controlId="savedAddresses" className="mb-3">
               <Form.Label>
                 <h3>Select a delivery Address</h3>
@@ -286,7 +289,7 @@ export const OrderCheckout = () => {
                     type="radio"
                     key={index}
                     name="savedAddress"
-                    label={`${address.address}, ${address.city}, ${address.state}, ${address.pinCode}`}
+                    label={`${address.addressType} : ${address.addressLine}, ${address.street}, ${address.phoneNumber}, ${address.city}, ${address.state}, ${address.pinCode}`}
                     value={index}
                     onChange={() => handleSaveAddressSelect(address)}
                   />
@@ -297,6 +300,35 @@ export const OrderCheckout = () => {
               </div>
             </Form.Group>
             </Row>
+
+        </Col>
+
+        <Col lg={6}>
+          <Form noValidate onSubmit={handleSubmit}>
+
+            {/* <Row>
+            <Form.Group controlId="savedAddresses" className="mb-3">
+              <Form.Label>
+                <h3>Select a delivery Address</h3>
+              </Form.Label>
+              <div>
+                {Array.isArray(addresses) && addresses.length > 0 ? (
+                  addresses.map((address, index) => (
+                  <Form.Check
+                    type="radio"
+                    key={index}
+                    name="savedAddress"
+                    label={`${address.addressLine}, ${address.street}, ${address.phoneNumber}, ${address.city}, ${address.state}, ${address.pinCode}`}
+                    value={index}
+                    onChange={() => handleSaveAddressSelect(address)}
+                  />
+                ))
+                ) : (
+                  <p>No saved addresses found</p>
+                )}
+              </div>
+            </Form.Group>
+            </Row> */}
 
             <hr />
 
@@ -405,6 +437,21 @@ export const OrderCheckout = () => {
                 </Form.Group>
               </Row>
               <Row>
+              <Form.Group as={Col} controlId="street" className="mb-3" md={6}>
+                  <Form.Label>Street</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Street"
+                    autoComplete="address-level2"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.street}
+                    isInvalid={touched.street && !!errors.street}
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.street}
+                  </Form.Control.Feedback> 
+                </Form.Group>
                 <Form.Group as={Col} controlId="city" className="mb-3" md={6}>
                   <Form.Label>City</Form.Label>
                   <Form.Control
@@ -420,21 +467,7 @@ export const OrderCheckout = () => {
                     {errors.city}
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group as={Col} controlId="street" className="mb-3" md={6}>
-                  <Form.Label>Street</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Street"
-                    autoComplete="address-level2"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.street}
-                    isInvalid={touched.street && !!errors.street}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.street}
-                  </Form.Control.Feedback> 
-                </Form.Group>
+               
               </Row>
               <Row>
                 <Form.Group as={Col} controlId="state" className="mb-3" md={6}>
