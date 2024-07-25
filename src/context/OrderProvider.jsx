@@ -48,7 +48,7 @@ const addSingleProduct= async (data, next = () => {}) => {
 
  const updateOrderItem = async (data, next = () => {}) => {
     try {
-        console.log(data);
+        // console.log(data);
       const res = await updateOrderItemService(data);
       setOrder(res);
       next();
@@ -61,7 +61,7 @@ const addSingleProduct= async (data, next = () => {}) => {
 
   // remove item from cart
   const removeItem = async (itemId,  next = () => {}) => {
-    console.log(itemId);
+    // console.log(itemId);
     try {
     //   const newOrder = order.items.filter((item) => item.orderItemId !== itemId);
     //   setOrder({
@@ -82,7 +82,7 @@ const addSingleProduct= async (data, next = () => {}) => {
 const removeAllItems = async () => {
     try {
       const data = await removeAllItemsFromOrder(userData.userId);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.log(error);
     }
