@@ -8,12 +8,20 @@ export const profileSchema = Yup.object().shape({
   lastName: Yup.string()
     .min(2, "Last Name need atleast 2 characters")
     .required("Please provide a last name"),
+    phoneNumber: Yup.string()
+    .min(10, "Shipping Phone should contain 10 Numbers")
+    .max(10, "Shipping Phone should not contain more than 10 Numbers")
+      .matches(
+        REGEX_VALIDATIONS.PHONE,
+        "Please provide a valid 10 digit phone number"
+      )
+      .required("Please provide a phone number"),
   state: Yup.string()
     .required(
       "State is required"
     ),
-  address: Yup.string()
-  .min(10, "Address should be atleast 100 characters")
+  addressLine: Yup.string()
+  .min(10, "Address should be atleast 10 characters")
   .required("Address is required"),
  
   pinCode: Yup.string()
