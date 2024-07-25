@@ -30,6 +30,9 @@ import PrivateRoutes from "./Components/Auth/PrivateRoutes";
 
 import { ViewOrders } from "./Pages/Shopkeeper/ViewOrders";
 
+import {EditProfile} from "./Components/Users/EditProfile";
+import {AddressManagement} from "./Components/Users/AddressManagement";
+
 const App = () => {
   // state for category sidebar
   const [showCategorySidebar, setShowCategorySidebar] = useState(false);
@@ -78,7 +81,7 @@ const App = () => {
                 }
               >
                  <Route path="/profile" element={<Profile/>}></Route>
-                <Route path="/edit-profile" element={<EditProfile/>}></Route>
+                 <Route path="/edit-profile" element={<EditProfile/>}></Route>
                 <Route path="/save-addresses" element={<AddressManagement/>}></Route>
                <Route path="/cart" element={<ShoppingCart />}></Route>
                
