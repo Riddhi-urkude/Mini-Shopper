@@ -1,19 +1,29 @@
 import React, { useContext } from "react";
 import { useState } from "react";
 import {
+  Alert,
   Button,
   Col,
   Container,
   Form,
   Row,
   Spinner,
+  Card,
+  Modal
 } from "react-bootstrap";
 import { SideBar } from "../../Components/SideBar";
+//import { AddressAutofill } from "@mapbox/search-js-react";
 import { useFormik } from "formik";
 import { UserContext } from "../../Context/UserContext";
+import { profileSchema } from "../../utils/schema/ProfileSchema";
 import { useEffect } from "react";
-import { getUserById } from "../../Services/User.Service";
+import { getUserById, updateUser } from "../../Services/User.Service";
 import { toast } from "react-toastify";
+import { ImageUpload } from "../../Components/Users/ImageUpload";
+
+
+
+import axios from "axios";
 
 
 const Profile = () => {
@@ -37,6 +47,7 @@ const Profile = () => {
       
       getUserById(userId)
       .then((userRes) => {
+        console.log(userRes);
         setUser(userRes);
       })
       .catch((error) => {
@@ -92,21 +103,22 @@ const Profile = () => {
                 </Card.Body>
               </Card>
             </Col>
-
+             { userContext.userData.role == "user" &&
             <Col xs={12}>
-            <Card className="mb-3">
+              <Card className="mb-3">
                 <Card.Body>
                   <Card.Title>Orders</Card.Title>
                   <Button variant="link" href="/orders" className="stretched-link"></Button>
                 </Card.Body>
               </Card>
             </Col>
+            }
           </Row>
         </Container>
     </>
     )}
   </>
   )
-}
+};
 
 export default Profile;
