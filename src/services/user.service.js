@@ -3,14 +3,14 @@ import { publicAxiosInstance, privateAxiosInstance } from "./Axios.Service";
 
 
 export const registerUser= async (data)=> {
-      data.userId=data.email;
-      data.role=data.userType;
+     // data.userId=data.email;
+      //data.role=data.userType;
       //data.firstName=null;
     //  data.lastName=data.lname;
     // data.password="Kishore@123";
       console.log(data);
    //  try{
-        return await publicAxiosInstance.post("/users/newUser", data);
+       return await publicAxiosInstance.post("/users/newUser", data);
         //.then((res)=>{console.log("response in user service "+res)});
     //  }catch(err){
     //   console.log("error "+err);
@@ -19,14 +19,6 @@ export const registerUser= async (data)=> {
     //  }
  
 }
-
-export const registerShopkeeper= async (data)=> {
-  data.userId=data.email;
-  data.role=data.userType;
-  console.log(data);
-    return await publicAxiosInstance.post("/users/newUser", data);
-}
-
 
 export const loginUser= async(data)=>{
     // console.log("data "+data.email);
@@ -42,6 +34,7 @@ export const loginUser= async(data)=>{
     //data.userId=null;
   //  try {
      const result = await publicAxiosInstance.post(`/users/loginUser`, data);
+     console.log(result);
      return result;
      // console.log("result "+result.data);
     // } catch (err) {
@@ -71,17 +64,34 @@ export const loginShopkeeper = async(data)=>{
 export const getUserById= async (userId) => {
 
   const res=await privateAxiosInstance.post(`/users/${userId}`);
+  console.log(res);
   return res.data;
 
 }
 
 
 export const updateUser= async (userId, data) => {
-  //  console.log(data);
-  const res=await privateAxiosInstance.put(`/users/${userId}`,data);
+  console.log(userId);
+    console.log(data);
+  const res=await privateAxiosInstance.put(`/users/updateDetails/${userId}`,data);
   return res.data;
 
 }
   
+
+export const addAddress= async (userId, data) => {
+  console.log(userId);
+    console.log(data);
+  const res=await privateAxiosInstance.put(`/users/addAddress/${userId}`,data);
+  return res.data;
+
+}
+
+// export const updateUserAddresses= async (userId, data) => {
+//   console.log(data);
+// const res=await privateAxiosInstance.put(`/users/${userId}`,data);
+// return res.data;
+
+// }
 
 
