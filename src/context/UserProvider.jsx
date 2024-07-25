@@ -16,8 +16,8 @@ const UserProvider = ({ children }) => {
   // login
   const doLogin = (user, token) => {
     // set user data and token in local storage
-    console.log(user);
-    console.log(token);
+    // console.log(user);
+    // console.log(token);
     doLoginLocalStorage(user, token);
 
     // set login value and user data in user context
