@@ -3,7 +3,7 @@ import { REGEX_VALIDATIONS } from "../regex";
 
 export const placeOrderSchema = Yup.object().shape({
 
-  orderName: Yup.string().required("Please provide a name"),
+  orderName: Yup.string().required("Please provide order name"),
 
   firstName: Yup.string().required("Please provide a first name"),
   
