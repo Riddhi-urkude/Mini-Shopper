@@ -9,7 +9,7 @@ import { SingleOrderView } from "../../Components/Users/SingleOrderView";
 import { Loader } from "../../Components/Loader";
 
 export const Orders = () => {
-  document.title = "QuickPik | Orders";
+  document.title = "MINI-SHOPPER | Orders";
 
   const { userData } = useContext(UserContext);
 
@@ -20,7 +20,7 @@ export const Orders = () => {
   const loadUserOrders = async (userId) => {
     try {
       const data = await getAllOrdersByUserId(userId);
-      console.log(data);
+      // console.log(data);
       setOrders(data);
       setLoading(false);
     } catch (error) {
