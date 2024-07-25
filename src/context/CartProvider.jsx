@@ -6,7 +6,6 @@ import { useContext } from "react";
 import {
   addItemToCart,
   getCartByUserId,
-  removeAllItemsFromCart,
   removeItemFromCart,
 } from "../Services/Cart.Service";
 import { toast } from "react-toastify";
@@ -17,9 +16,7 @@ export const CartProvider = ({ children }) => {
   
   const fetchUserCart = async (userId) => {
     try {
-     // console.log("now it is called in cart provider");
       const data = await getCartByUserId(userId);
-      console.log(data);
       setCart(data);
     } catch (error) {
       setCart({ items: [] });
@@ -29,9 +26,7 @@ export const CartProvider = ({ children }) => {
   // add item to cart
   const addItem = async (data, next = () => {}) => {
     try {
-      console.log(data);
       const res = await addItemToCart(data, userData.userId);
-
       setCart(res);
       next();
     } catch (error) {
@@ -59,14 +54,14 @@ export const CartProvider = ({ children }) => {
   };
 
   // remove all items from cart
-  const removeAllItems = async () => {
-    try {
-      const data = await removeAllItemsFromCart(userData.userId);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const removeAllItems = async () => {
+  //   try {
+  //     const data = await removeAllItemsFromCart(userData.userId);
+  //     // console.log(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     if (isLogin) {
@@ -82,7 +77,7 @@ export const CartProvider = ({ children }) => {
         setCart: setCart,
         addItem: addItem,
         removeItem: removeItem,
-        removeAllItems: removeAllItems,
+        // removeAllItems: removeAllItems,
       }}
     >
       {children}
